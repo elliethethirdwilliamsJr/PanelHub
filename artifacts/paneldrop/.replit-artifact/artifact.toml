@@ -1,0 +1,31 @@
+kind = "web"
+previewPath = "/paneldrop/"
+title = "PanelDrop"
+version = "1.0.0"
+id = "artifacts/paneldrop"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/paneldrop/" ]
+localPort = 22969
+
+[services.development]
+run = "pnpm --filter @workspace/paneldrop run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/paneldrop", "run", "build" ]
+publicDir = "artifacts/paneldrop/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "22969"
+BASE_PATH = "/paneldrop/"

@@ -1,0 +1,109 @@
+.manga-panel {
+  border: 4px solid #000;
+  background-color: #fff;
+  position: relative;
+  overflow: hidden;
+}
+
+.manga-border-thick {
+  border: 4px solid #000;
+}
+
+.manga-border-right {
+  border-right: 4px solid #000;
+}
+.manga-border-bottom {
+  border-bottom: 4px solid #000;
+}
+.manga-border-top {
+  border-top: 4px solid #000;
+}
+.manga-border-left {
+  border-left: 4px solid #000;
+}
+
+.manga-halftone {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-image: radial-gradient(circle, #000 2px, transparent 2px);
+  background-size: 12px 12px;
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.manga-speedlines {
+  background: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 10px,
+    rgba(0, 0, 0, 0.1) 10px,
+    rgba(0, 0, 0, 0.1) 12px,
+    transparent 12px,
+    transparent 20px,
+    rgba(0,0,0,0.2) 20px,
+    rgba(0,0,0,0.2) 24px
+  );
+  transform: rotate(-15deg) scale(1.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.manga-speech-bubble {
+  position: relative;
+  background: #fff;
+  border: 4px solid #000;
+  border-radius: 50% / 40%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+}
+
+.manga-speech-bubble::before {
+  content: '';
+  position: absolute;
+  bottom: -15px;
+  right: 20%;
+  border-width: 15px 15px 0 0;
+  border-style: solid;
+  border-color: #000 transparent transparent transparent;
+}
+.manga-speech-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -9px;
+  right: calc(20% + 4px);
+  border-width: 10px 10px 0 0;
+  border-style: solid;
+  border-color: #fff transparent transparent transparent;
+}
+
+.manga-diagonal-cut {
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+}
+.manga-diagonal-cut-reverse {
+  clip-path: polygon(0 15%, 100% 0, 100% 100%, 0 100%);
+}
+
+.manga-shading {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(0,0,0,0.1),
+    rgba(0,0,0,0.1) 2px,
+    transparent 2px,
+    transparent 8px
+  );
+}
+
+.font-manga-title {
+  font-family: 'Bangers', cursive;
+  letter-spacing: 0.05em;
+}
+.font-manga-body {
+  font-family: 'DM Sans', sans-serif;
+}
