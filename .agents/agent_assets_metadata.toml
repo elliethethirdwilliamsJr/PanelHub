@@ -1,0 +1,50 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "vghftAX5WhxJu9PaNa6VF"
+uri = "file://artifacts/mockup-sandbox/src/assets/br2049.png"
+type = "image"
+title = "Blade Runner 2049 Cover"
+
+[[generated]]
+id = "DA0n6zzuLPdDQj8wqRkVD"
+uri = "file://artifacts/mockup-sandbox/src/assets/gits.png"
+type = "image"
+title = "Ghost in the Shell poster"
+
+[[generated]]
+id = "zVE_iLEAVjPXm5wSrU0ja"
+uri = "file://artifacts/mockup-sandbox/src/assets/eva.png"
+type = "image"
+title = "Evangelion poster"
+
+[[generated]]
+id = "-kVeNM9q2W296HJGl-v4J"
+uri = "file://artifacts/mockup-sandbox/src/assets/parasite.png"
+type = "image"
+title = "Parasite poster"
+
+[[generated]]
+id = "0AGVnlDiSk59yi6Uzta8C"
+uri = "file://artifacts/mockup-sandbox/src/assets/shogun.png"
+type = "image"
+title = "Shogun poster"
+
+[[generated]]
+id = "nO1A5079Fb2f_mOsSbVNz"
+uri = "file://artifacts/mockup-sandbox/src/assets/bear.png"
+type = "image"
+title = "The Bear poster"
+
+[[generated]]
+id = "W3-KzRM9W6g1YSphd2eyg"
+uri = "file://artifacts/mockup-sandbox/src/assets/fireflies.png"
+type = "image"
+title = "Fireflies Hero"
+
+[[generated]]
+id = "5ymNeGPk9DNINb4E__95r"
+uri = "file://artifacts/mockup-sandbox/src/assets/images/vibrant-hero.png"
+type = "image"
+title = "Anime action hero in neon city"

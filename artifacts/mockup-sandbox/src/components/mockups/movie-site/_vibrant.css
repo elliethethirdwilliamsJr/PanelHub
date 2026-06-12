@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=Teko:wght@500;700&display=swap');
+
+.vibrant-theme {
+  --bg-base: #050505;
+  --bg-surface: #111111;
+  --bg-card: #1a1a1a;
+  --neon-pink: #ff0055;
+  --neon-blue: #00f3ff;
+  --neon-purple: #b026ff;
+  --neon-orange: #ff5e00;
+  --neon-green: #00ff66;
+  --text-main: #ffffff;
+  --text-muted: #a0a0a0;
+
+  font-family: 'Outfit', sans-serif;
+  background-color: var(--bg-base);
+  color: var(--text-main);
+}
+
+.vibrant-theme h1, .vibrant-theme h2, .vibrant-theme h3, .vibrant-theme .font-display {
+  font-family: 'Teko', sans-serif;
+  text-transform: uppercase;
+  line-height: 0.9;
+  letter-spacing: 0.02em;
+}
+
+.text-neon-pink {
+  color: var(--neon-pink);
+  text-shadow: 0 0 10px rgba(255, 0, 85, 0.5), 0 0 20px rgba(255, 0, 85, 0.3);
+}
+
+.text-neon-blue {
+  color: var(--neon-blue);
+  text-shadow: 0 0 10px rgba(0, 243, 255, 0.5), 0 0 20px rgba(0, 243, 255, 0.3);
+}
+
+.border-neon-pink {
+  border: 1px solid var(--neon-pink);
+  box-shadow: 0 0 10px rgba(255, 0, 85, 0.2), inset 0 0 10px rgba(255, 0, 85, 0.2);
+}
+
+.border-neon-blue {
+  border: 1px solid var(--neon-blue);
+  box-shadow: 0 0 10px rgba(0, 243, 255, 0.2), inset 0 0 10px rgba(0, 243, 255, 0.2);
+}
+
+.bg-neon-pink {
+  background-color: var(--neon-pink);
+  box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
+}
+
+.bg-neon-blue {
+  background-color: var(--neon-blue);
+  box-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
+}
+
+.bg-neon-purple {
+  background-color: var(--neon-purple);
+  box-shadow: 0 0 15px rgba(176, 38, 255, 0.6);
+}
+
+.card-hover-glow {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid transparent;
+}
+.card-hover-glow:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 35px -10px rgba(176, 38, 255, 0.4);
+  border-color: rgba(176, 38, 255, 0.5);
+}
+
+.grid-bg {
+  background-image: 
+    linear-gradient(to right, rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.hero-gradient {
+  background: linear-gradient(to top, var(--bg-base) 0%, rgba(5,5,5,0.4) 50%, transparent 100%);
+}
+
+.nav-glass {
+  background: rgba(5, 5, 5, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.rank-number {
+  -webkit-text-stroke: 2px var(--neon-blue);
+  color: transparent;
+  font-family: 'Teko', sans-serif;
+}

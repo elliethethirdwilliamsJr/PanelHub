@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Outfit:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --cinema-black: #050505;
+  --cinema-surface: #111111;
+  --cinema-accent: #e50914; /* deep crimson */
+  --cinema-glow: rgba(229, 9, 20, 0.15);
+}
+
+.font-cinzel {
+  font-family: 'Cinzel', serif;
+}
+
+.font-outfit {
+  font-family: 'Outfit', sans-serif;
+}
+
+.cinema-bg {
+  background-color: var(--cinema-black);
+  color: white;
+}
+
+.hero-gradient {
+  background: linear-gradient(to top, var(--cinema-black) 0%, transparent 100%);
+}
+
+.hero-gradient-side {
+  background: linear-gradient(to right, var(--cinema-black) 0%, transparent 100%);
+}
+
+.card-hover {
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px var(--cinema-glow);
+  z-index: 10;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
