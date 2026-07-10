@@ -1,8 +1,9 @@
-export type Category = 'Anime' | 'Manga' | 'Movies' | 'Shows';
+export type Category = 'Anime';
 
-export const CATEGORIES: Category[] = ['Anime', 'Manga', 'Movies', 'Shows'];
+export const CATEGORIES: Category[] = ['Anime'];
 
 export interface HeroData {
+  id?: number;
   title: string;
   subtitle: string;
   tag: string;
@@ -11,6 +12,7 @@ export interface HeroData {
 }
 
 export interface Top10Data {
+  id?: number;
   title: string;
   views: string;
 }

@@ -1,0 +1,220 @@
+.kv-player {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    overflow: hidden;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    user-select: none;
+}
+
+.kv-player * {
+    -webkit-tap-highlight-color: transparent;
+}
+
+.kv-player video {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background: #000;
+}
+
+.kv-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    cursor: pointer;
+}
+
+.kv-pause-indicator {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+}
+
+.kv-pause-indicator svg {
+    width: 72px;
+    height: 72px;
+    color: #fff;
+    filter: drop-shadow(0 4px 20px rgba(124, 58, 237, 0.6));
+    background: rgba(124, 58, 237, 0.15);
+    backdrop-filter: blur(4px);
+    border-radius: 50%;
+    padding: 16px;
+    border: 1px solid rgba(124, 58, 237, 0.3);
+}
+
+.kv-buffering {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+    background: rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.kv-buffering.active {
+    opacity: 1;
+}
+
+.kv-spinner {
+    width: 52px;
+    height: 52px;
+    border: 3px solid rgba(255, 255, 255, 0.12);
+    border-top: 3px solid var(--accent-v, #8b5cf6);
+    border-radius: 50%;
+    animation: kv-spin-anim 0.75s linear infinite;
+    box-shadow: 0 0 16px rgba(124, 58, 237, 0.4);
+}
+
+@keyframes kv-spin-anim {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.kv-pause-indicator.kv-flash {
+    animation: kv-flash-anim 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@keyframes kv-flash-anim {
+    0% {
+        opacity: 0;
+        transform: scale(0.8);
+    }
+
+    30% {
+        opacity: 1;
+        transform: scale(1.1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.2);
+    }
+}
+
+.kv-skip-btn {
+    position: absolute;
+    bottom: 80px;
+    right: 20px;
+    z-index: 15;
+    background: rgba(10, 8, 20, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(124, 58, 237, 0.4);
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 700;
+    padding: 10px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    transition: background 0.2s, transform 0.2s, border-color 0.2s;
+    animation: kv-settings-in 0.3s ease;
+}
+
+.kv-skip-btn:hover {
+    background: rgba(124, 58, 237, 0.25);
+    border-color: rgba(124, 58, 237, 0.7);
+    transform: translateY(-2px);
+}
+
+.kv-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    padding: 0 14px 12px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.85) 80%);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.kv-controls.kv-hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(6px);
+}
+
+.kv-progress-wrap {
+    position: relative;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+    cursor: pointer;
+}
+
+.kv-buffer,
+.kv-played {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 3px;
+    border-radius: 99px;
+    pointer-events: none;
+    transition: height 0.15s;
+}
+
+.kv-buffer {
+    background: rgba(255, 255, 255, 0.2);
+    width: 0;
+}
+
+.kv-segments {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 3px;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+    border-radius: 99px;
+    transition: height 0.15s;
+}
+
+.kv-progress-wrap:hover .kv-segments {
+    height: 4px;
+}
+
+.kv-segment {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background: #ef4444;
+    box-shadow: 0 0 6px rgba(239, 68, 68, 0.55);
+    opacity: 0.85;
+}
+
+.kv-segment-intro,
+.kv-segment-outro {
+    background: #ef4444;
+}
+
+.kv-played {
+    background: #7c3aed;
+    width: 0;
+    z-index: 2;
+}
+
+.kv-seek {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 2;
