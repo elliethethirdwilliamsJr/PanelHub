@@ -1,21 +1,14 @@
 const VPS_API_URL = 'http://72.62.192.15:8000';
 
 export default async function handler(req, res) {
-  const { path, ...queryParams } = req.query;
-  const pathArray = Array.isArray(path) ? path : [path || ''];
-  const fullPath = pathArray.filter(p => p).join('/');
+  // Extract path from URL, not from query params
+  const urlPath = req.url.replace(/^\/api\//, '').split('?')[0];
   
-  // Build query string from remaining params
-  const params = new URLSearchParams();
-  for (const [key, value] of Object.entries(queryParams)) {
-    if (Array.isArray(value)) {
-      value.forEach(v => params.append(key, v));
-    } else {
-      params.append(key, value);
-    }
-  }
-  const queryString = params.toString();
-  const targetUrl = `${VPS_API_URL}/${fullPath}${queryString ? `?${queryString}` : ''}`;
+  // Get query params from URL
+  const url = new URL(req.url, `https://${req.headers.host}`);
+  const queryString = url.searchParams.toString();
+  
+  const targetUrl = `${VPS_API_URL}/${urlPath}${queryString ? `?${queryString}` : ''}`;
   
   console.log('Proxying to:', targetUrl);
   
