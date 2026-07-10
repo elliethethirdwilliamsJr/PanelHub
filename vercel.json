@@ -1,9 +1,8 @@
 {
   "buildCommand": "pnpm run build",
   "outputDirectory": "dist",
-  "installCommand": "pnpm install --filter @workspace/paneldrop...",
+  "installCommand": "pnpm install",
   "framework": null,
-  "rootDirectory": "artifacts/paneldrop",
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
   ]
