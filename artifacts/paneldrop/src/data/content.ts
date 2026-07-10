@@ -1,6 +1,6 @@
-export type Category = 'Anime';
+export type Category = 'Anime' | 'Manga' | 'Movies' | 'Shows';
 
-export const CATEGORIES: Category[] = ['Anime'];
+export const CATEGORIES: Category[] = ['Anime', 'Manga', 'Movies', 'Shows'];
 
 export interface HeroData {
   id?: number;

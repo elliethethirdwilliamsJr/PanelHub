@@ -259,7 +259,7 @@ export function Vibrant() {
             <a href="#" className="hover:text-white transition-colors">Discord</a>
           </div>
           <div className="text-[var(--text-muted)] text-sm">
-            © 2024 OtakuFire. Power Level > 9000.
+            © 2024 OtakuFire. Power Level {'>'}  9000.
           </div>
         </div>
       </footer>

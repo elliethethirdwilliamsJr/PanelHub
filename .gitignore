@@ -26,6 +26,7 @@ node_modules
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+reference/*
 
 # misc
 /.sass-cache
@@ -47,3 +48,4 @@ Thumbs.db
 # Replit
 .cache/
 .local/
+.vercel
