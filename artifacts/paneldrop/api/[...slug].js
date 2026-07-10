@@ -1,31 +1,16 @@
 const VPS_API_URL = 'http://72.62.192.15:8000';
 
 export default async function handler(req, res) {
-  // Extract path segments from query.slug
-  const { slug = [], ...queryParams } = req.query;
-  const pathSegments = Array.isArray(slug) ? slug : [slug];
-  const urlPath = pathSegments.filter(Boolean).join('/');
+  // Extract path from URL
+  const urlPath = req.url.replace(/^\/api\/?/, '').split('?')[0];
   
-  // Build query string
-  const params = new URLSearchParams();
-  for (const [key, value] of Object.entries(queryParams)) {
-    if (Array.isArray(value)) {
-      value.forEach(v => params.append(key, v));
-    } else {
-      params.append(key, value);
-    }
-  }
-  const queryString = params.toString();
+  // Get query params
+  const url = new URL(req.url, `https://${req.headers.host}`);
+  const queryString = url.searchParams.toString();
   
   const targetUrl = `${VPS_API_URL}/${urlPath}${queryString ? `?${queryString}` : ''}`;
   
-  console.log('Proxying request:', {
-    method: req.method,
-    slug,
-    urlPath,
-    queryString,
-    targetUrl
-  });
+  console.log('Proxying:', targetUrl);
   
   try {
     const response = await fetch(targetUrl, {
@@ -37,28 +22,19 @@ export default async function handler(req, res) {
       body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
     });
     
-    console.log('Upstream response:', {
-      status: response.status,
-      statusText: response.statusText
-    });
-    
     if (!response.ok) {
       const text = await response.text();
-      console.error('Upstream error body:', text.substring(0, 500));
+      console.error('Upstream error:', response.status, text.substring(0, 200));
       return res.status(response.status).json({ 
         error: `Upstream returned ${response.status}`, 
-        details: text.substring(0, 500)
+        details: text.substring(0, 200)
       });
     }
     
     const data = await response.json();
-    console.log('Successfully proxied');
     res.status(200).json(data);
   } catch (error) {
-    console.error('Proxy error:', {
-      message: error.message,
-      targetUrl
-    });
+    console.error('Proxy error:', error.message);
     res.status(500).json({ 
       error: 'Failed to fetch from upstream API',
       message: error.message,
