@@ -10,7 +10,13 @@ export default async function handler(req, res) {
   
   const targetUrl = `${VPS_API_URL}/${urlPath}${queryString ? `?${queryString}` : ''}`;
   
-  console.log('Proxying to:', targetUrl);
+  console.log('Proxying request:', {
+    method: req.method,
+    originalUrl: req.url,
+    extractedPath: urlPath,
+    queryString,
+    targetUrl
+  });
   
   try {
     const response = await fetch(targetUrl, {
@@ -22,17 +28,30 @@ export default async function handler(req, res) {
       body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
     });
     
+    console.log('Upstream response:', {
+      status: response.status,
+      statusText: response.statusText,
+      headers: Object.fromEntries(response.headers.entries())
+    });
+    
     if (!response.ok) {
-      console.error('Upstream error:', response.status, response.statusText);
       const text = await response.text();
-      console.error('Response body:', text);
-      return res.status(response.status).json({ error: `Upstream returned ${response.status}`, details: text });
+      console.error('Upstream error body:', text);
+      return res.status(response.status).json({ 
+        error: `Upstream returned ${response.status}`, 
+        details: text.substring(0, 500)
+      });
     }
     
     const data = await response.json();
-    res.status(response.status).json(data);
+    console.log('Successfully proxied, response size:', JSON.stringify(data).length);
+    res.status(200).json(data);
   } catch (error) {
-    console.error('Proxy error:', error.message, error.stack);
+    console.error('Proxy error:', {
+      message: error.message,
+      stack: error.stack,
+      targetUrl
+    });
     res.status(500).json({ 
       error: 'Failed to fetch from upstream API',
       message: error.message,
