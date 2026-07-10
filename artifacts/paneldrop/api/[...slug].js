@@ -1,19 +1,28 @@
 const VPS_API_URL = 'http://72.62.192.15:8000';
 
 export default async function handler(req, res) {
-  // Extract path from URL, not from query params
-  const urlPath = req.url.replace(/^\/api\//, '').split('?')[0];
+  // Extract path segments from query.slug
+  const { slug = [], ...queryParams } = req.query;
+  const pathSegments = Array.isArray(slug) ? slug : [slug];
+  const urlPath = pathSegments.filter(Boolean).join('/');
   
-  // Get query params from URL
-  const url = new URL(req.url, `https://${req.headers.host}`);
-  const queryString = url.searchParams.toString();
+  // Build query string
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(queryParams)) {
+    if (Array.isArray(value)) {
+      value.forEach(v => params.append(key, v));
+    } else {
+      params.append(key, value);
+    }
+  }
+  const queryString = params.toString();
   
   const targetUrl = `${VPS_API_URL}/${urlPath}${queryString ? `?${queryString}` : ''}`;
   
   console.log('Proxying request:', {
     method: req.method,
-    originalUrl: req.url,
-    extractedPath: urlPath,
+    slug,
+    urlPath,
     queryString,
     targetUrl
   });
@@ -30,13 +39,12 @@ export default async function handler(req, res) {
     
     console.log('Upstream response:', {
       status: response.status,
-      statusText: response.statusText,
-      headers: Object.fromEntries(response.headers.entries())
+      statusText: response.statusText
     });
     
     if (!response.ok) {
       const text = await response.text();
-      console.error('Upstream error body:', text);
+      console.error('Upstream error body:', text.substring(0, 500));
       return res.status(response.status).json({ 
         error: `Upstream returned ${response.status}`, 
         details: text.substring(0, 500)
@@ -44,12 +52,11 @@ export default async function handler(req, res) {
     }
     
     const data = await response.json();
-    console.log('Successfully proxied, response size:', JSON.stringify(data).length);
+    console.log('Successfully proxied');
     res.status(200).json(data);
   } catch (error) {
     console.error('Proxy error:', {
       message: error.message,
-      stack: error.stack,
       targetUrl
     });
     res.status(500).json({ 
