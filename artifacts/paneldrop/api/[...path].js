@@ -1,14 +1,18 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-
 const VPS_API_URL = 'http://72.62.192.15:8000';
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+export default async function handler(req, res) {
   const { path } = req.query;
   const pathArray = Array.isArray(path) ? path : [path];
   const fullPath = pathArray.join('/');
   
-  // Build the full URL with query params
-  const queryString = new URLSearchParams(req.query as Record<string, string>).toString();
+  // Build query string excluding the 'path' parameter
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries(req.query)) {
+    if (key !== 'path') {
+      params.append(key, value);
+    }
+  }
+  const queryString = params.toString();
   const targetUrl = `${VPS_API_URL}/${fullPath}${queryString ? `?${queryString}` : ''}`;
   
   try {
