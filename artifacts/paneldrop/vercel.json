@@ -1,9 +1,6 @@
 {
-  "buildCommand": "pnpm run build",
-  "outputDirectory": "artifacts/paneldrop/dist",
-  "installCommand": "pnpm install",
   "functions": {
-    "artifacts/paneldrop/api/**/*.js": {
+    "api/**/*.js": {
       "maxDuration": 10
     }
   },
@@ -31,10 +28,6 @@
     {
       "source": "/api/proxy/:path*",
       "destination": "/api/proxy"
-    },
-    {
-      "source": "/((?!api/).*)",
-      "destination": "/index.html"
     }
   ]
 }
