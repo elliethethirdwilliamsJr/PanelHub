@@ -5,14 +5,15 @@
   "functions": {
     "api/**/*.js": {
       "maxDuration": 10
+    },
+    "api/[...slug].js": {
+      "includeFiles": "api/**"
     }
   },
-  "cleanUrls": false,
-  "trailingSlash": false,
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "src": "/api/watch/(.*)",
+      "continue": true
     },
     {
       "handle": "filesystem"
