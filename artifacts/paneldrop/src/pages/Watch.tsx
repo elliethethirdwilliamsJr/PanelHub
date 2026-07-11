@@ -178,7 +178,12 @@ export default function Watch() {
   useEffect(() => {
     if (!episodesPayload || !episodesPayload.providers) return;
 
-    const providerNames = Object.keys(episodesPayload.providers);
+    // Filter to only providers that have at least one episode in any category
+    const providerNames = Object.keys(episodesPayload.providers).filter((name) => {
+      const eps = episodesPayload.providers[name]?.episodes;
+      if (!eps || typeof eps !== 'object') return false;
+      return Object.values(eps).some((list: any) => Array.isArray(list) && list.length > 0);
+    });
     if (!providerNames.length) {
       setProviders([]);
       setSelectedProvider('');
@@ -189,7 +194,9 @@ export default function Watch() {
 
     const nextProvider = providerNames.includes(selectedProvider) ? selectedProvider : providerNames[0];
     const categoryMap = episodesPayload.providers[nextProvider]?.episodes || {};
-    const categoryNames = Object.keys(categoryMap);
+    const categoryNames = Object.keys(categoryMap).filter(
+      (cat) => Array.isArray(categoryMap[cat]) && categoryMap[cat].length > 0
+    );
     const nextCategory = categoryNames.includes(selectedCategory) ? selectedCategory : categoryNames[0] || 'sub';
     const list = categoryMap[nextCategory] || [];
 
@@ -594,7 +601,7 @@ export default function Watch() {
               <div className="mt-5 grid gap-4 md:grid-cols-[1.1fr_0.9fr]">
                 <div className="space-y-4">
                   <div className="rounded border-2 border-black bg-[#fff4ed] p-3">
-                    <h2 className="font-manga-title text-xl uppercase tracking-wide">Playback</h2>
+                    <h2 className="font-manga-title text-xl uppercase tracking-wide">Server</h2>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {providers.map((provider) => (
                         <button
@@ -647,7 +654,7 @@ export default function Watch() {
                   <p className="mt-3 font-manga-body text-sm leading-7 text-gray-800">{stripHtml(anime?.title?.romaji || '')}</p>
                   <div className="mt-4 space-y-2 text-sm font-manga-body font-bold uppercase tracking-[0.2em]">
                     <div className="flex items-center justify-between border-b border-black/20 pb-2">
-                      <span>Provider</span>
+                      <span>Server</span>
                       <span>{selectedProvider || '—'}</span>
                     </div>
                     <div className="flex items-center justify-between border-b border-black/20 pb-2">

@@ -264,7 +264,7 @@ export default function AnimeInfo() {
                 <h1 className="font-manga-title text-4xl md:text-6xl uppercase tracking-wider mt-3 max-w-4xl" style={{ textShadow: '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff' }}>
                   {title}
                 </h1>
-                <p className="mt-3 max-w-3xl border-2 border-black bg-white/90 p-3 font-manga-body font-bold text-sm md:text-base">
+                <p className="mt-3 max-w-3xl border-2 border-black bg-white/90 p-3 font-bold text-sm md:text-base">
                   {synopsis}
                 </p>
               </div>
@@ -282,7 +282,7 @@ export default function AnimeInfo() {
 
                 <div className="mt-6">
                   <h2 className="font-manga-title text-2xl uppercase tracking-wide">Synopsis</h2>
-                  <p className="mt-3 font-manga-body text-base leading-7 text-gray-800">{synopsis}</p>
+                  <p className="mt-3 text-base leading-7 text-gray-800">{synopsis}</p>
                 </div>
 
                 <div className="mt-6 flex flex-wrap gap-3">
