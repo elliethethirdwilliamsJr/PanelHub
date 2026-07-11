@@ -1,9 +1,10 @@
 const https = require('http');
 
 module.exports = async (req, res) => {
-  const { id } = req.query;
+  // Extract query string
+  const queryString = req.url.split('?')[1] || '';
   
-  const targetUrl = `http://72.62.192.15:8000/info/${id}`;
+  const targetUrl = `http://72.62.192.15:8000/sources?${queryString}`;
 
   const options = {
     method: req.method,
@@ -26,7 +27,16 @@ module.exports = async (req, res) => {
     });
 
     proxyRes.on('end', () => {
-      res.send(body);
+      // If upstream returns 444, return error with details
+      if (proxyRes.statusCode === 444) {
+        res.status(444).json({
+          error: 'Upstream service unavailable',
+          detail: 'The video source provider returned a 444 error',
+          statusCode: 444
+        });
+      } else {
+        res.send(body);
+      }
     });
   });
 

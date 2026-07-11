@@ -1,9 +1,10 @@
 const https = require('http');
 
 module.exports = async (req, res) => {
-  const { id } = req.query;
+  // Extract path segments after /api/watch/
+  const path = req.url.replace(/^\/api\/watch\//, '').split('?')[0];
   
-  const targetUrl = `http://72.62.192.15:8000/info/${id}`;
+  const targetUrl = `http://72.62.192.15:8000/watch/${path}`;
 
   const options = {
     method: req.method,
