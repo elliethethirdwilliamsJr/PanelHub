@@ -9,11 +9,13 @@
   },
   "cleanUrls": false,
   "trailingSlash": false,
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/watch/.*",
-      "dest": "/api/[...slug]"
-    },
+      "source": "/api/watch/:path(.*)",
+      "destination": "/api/:path*"
+    }
+  ],
+  "routes": [
     {
       "handle": "filesystem"
     },
