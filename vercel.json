@@ -7,13 +7,11 @@
       "maxDuration": 10
     }
   },
-  "rewrites": [
-    {
-      "source": "/api/watch/:path*",
-      "destination": "/api/watch/:path*"
-    }
-  ],
   "routes": [
+    {
+      "src": "/api/watch/(.*)",
+      "dest": "/api/$1"
+    },
     {
       "handle": "filesystem"
     },
