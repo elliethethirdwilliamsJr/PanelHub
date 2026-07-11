@@ -9,10 +9,6 @@
   },
   "routes": [
     {
-      "src": "/api/watch/(.*)",
-      "dest": "/api/watch/$1"
-    },
-    {
       "handle": "filesystem"
     },
     {
