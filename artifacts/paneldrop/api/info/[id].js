@@ -1,43 +1,38 @@
-const https = require('http');
+const VPS_API_URL = 'http://72.62.192.15:8000';
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   const { id } = req.query;
   
-  const targetUrl = `http://72.62.192.15:8000/info/${id}`;
-
-  const options = {
-    method: req.method,
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  };
-
-  const proxyReq = https.request(targetUrl, options, (proxyRes) => {
-    res.status(proxyRes.statusCode);
+  const targetUrl = `${VPS_API_URL}/info/${id}`;
+  
+  console.log('Info endpoint proxying to:', targetUrl);
+  
+  try {
+    const response = await fetch(targetUrl, {
+      method: req.method,
+      headers: {
+        'Content-Type': 'application/json',
+        'User-Agent': 'Vercel-Proxy/1.0',
+      },
+    });
     
-    // Forward headers
-    Object.keys(proxyRes.headers).forEach((key) => {
-      res.setHeader(key, proxyRes.headers[key]);
-    });
-
-    let body = '';
-    proxyRes.on('data', (chunk) => {
-      body += chunk;
-    });
-
-    proxyRes.on('end', () => {
-      res.send(body);
-    });
-  });
-
-  proxyReq.on('error', (error) => {
-    console.error('Proxy error:', error);
+    if (!response.ok) {
+      const text = await response.text();
+      console.error('Upstream error:', response.status, text.substring(0, 200));
+      return res.status(response.status).json({ 
+        error: `Upstream returned ${response.status}`, 
+        details: text.substring(0, 200)
+      });
+    }
+    
+    const data = await response.json();
+    res.status(200).json(data);
+  } catch (error) {
+    console.error('Info proxy error:', error.message);
     res.status(500).json({ 
       error: 'Failed to fetch from upstream API',
       message: error.message,
       target: targetUrl
     });
-  });
-
-  proxyReq.end();
-};
+  }
+}
