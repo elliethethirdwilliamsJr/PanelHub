@@ -10,7 +10,7 @@
   "routes": [
     {
       "src": "/api/watch/(.*)",
-      "dest": "/api/$1"
+      "dest": "/api/watch/$1"
     },
     {
       "handle": "filesystem"
