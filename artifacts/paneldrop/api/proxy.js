@@ -48,16 +48,18 @@ export default async function handler(req, res) {
     // Forward response status
     res.status(response.status);
     
-    // Check if the upstream response was compressed. Node fetch auto-decompresses,
-    // so we must strip the content-encoding header and content-length header
-    // to prevent encoding and truncation errors in the client browser.
+    const contentType = response.headers.get('content-type') || '';
+    const isM3U8 = contentType.toLowerCase().includes('mpegurl') || targetUrl.split('?')[0].endsWith('.m3u8');
     const isCompressed = response.headers.has('content-encoding');
     
     // Forward response headers
     for (const [key, value] of response.headers.entries()) {
       const lowerKey = key.toLowerCase();
       if (lowerKey === 'content-encoding') continue;
-      if (lowerKey === 'content-length' && isCompressed) continue;
+      // We must not forward the content-length if:
+      // 1. The response was compressed (fetch decompressed it, changing the length).
+      // 2. The response is an M3U8 file (which we will rewrite, changing the length).
+      if (lowerKey === 'content-length' && (isCompressed || isM3U8)) continue;
       
       res.setHeader(key, value);
     }
@@ -65,6 +67,21 @@ export default async function handler(req, res) {
     // If it was a HEAD request, we terminate here and don't send the body
     if (req.method === 'HEAD') {
       return res.end();
+    }
+    
+    // Intercept and rewrite M3U8 playlist URLs to ensure browser fetches chunks
+    // via HTTPS Vercel proxy instead of insecure HTTP VPS directly (prevents Mixed Content blocks).
+    if (isM3U8) {
+      const text = await response.text();
+      const proto = req.headers['x-forwarded-proto'] || (req.socket.encrypted ? 'https' : 'http');
+      const vercelProxyBase = `${proto}://${req.headers.host}/api/proxy/hls`;
+      
+      const rewrittenText = text
+        .replaceAll('http://72.62.192.15:8000/proxy/hls', vercelProxyBase)
+        .replaceAll('https://72.62.192.15:8000/proxy/hls', vercelProxyBase);
+      
+      res.setHeader('Content-Type', contentType || 'application/vnd.apple.mpegurl');
+      return res.send(rewrittenText);
     }
     
     if (response.body) {
