@@ -1,8 +1,9 @@
 const https = require('http');
 
 module.exports = async (req, res) => {
-  // Extract path segments after /api/watch/
-  const path = req.url.replace(/^\/api\/watch\//, '').split('?')[0];
+  // Vercel passes catch-all segments as req.query.slug array
+  const { slug } = req.query;
+  const path = Array.isArray(slug) ? slug.join('/') : slug || '';
   
   const targetUrl = `http://72.62.192.15:8000/watch/${path}`;
 
