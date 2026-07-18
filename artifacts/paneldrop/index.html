@@ -16,9 +16,73 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bangers&family=DM+Sans:opsz,wght@9..40,400;500;700;900&display=swap">
+    
+    <!-- Adsterra Popunder -->
+    <script src="https://pl30428050.effectivecpmnetwork.com/12/12/78/121278714a15d0be462ff6a7d60382a2.js"></script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- Adsterra Script -->
+    <script src="https://pl30428051.effectivecpmnetwork.com/04/c2/47/04c24788ad69ef65464f62ce7cb614ba.js"></script>
+    
+    <!-- Ad Blocker Detection -->
+    <script>
+      (function() {
+        // Create a test element that ad blockers typically block
+        const testAd = document.createElement('div');
+        testAd.className = 'ad adsbox doubleclick ad-placement ad-placeholder adbadge BannerAd';
+        testAd.style.cssText = 'width:1px;height:1px;position:absolute;left:-10000px;';
+        document.body.appendChild(testAd);
+        
+        // Check if the ad element was blocked
+        setTimeout(function() {
+          const isBlocked = testAd.offsetHeight === 0 || 
+                           testAd.style.display === 'none' || 
+                           testAd.style.visibility === 'hidden' ||
+                           window.getComputedStyle(testAd).display === 'none';
+          
+          document.body.removeChild(testAd);
+          
+          if (isBlocked) {
+            // Ad blocker detected - show overlay
+            const overlay = document.createElement('div');
+            overlay.id = 'adblock-overlay';
+            overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.95);z-index:999999;display:flex;align-items:center;justify-content:center;font-family:system-ui,-apple-system,sans-serif;';
+            
+            const modal = document.createElement('div');
+            modal.style.cssText = 'background:#1a1a1a;border:2px solid #f04e35;padding:40px;max-width:500px;margin:20px;border-radius:12px;text-align:center;box-shadow:0 20px 60px rgba(240,78,53,0.3);';
+            
+            modal.innerHTML = `
+              <svg style="width:64px;height:64px;margin:0 auto 20px;color:#f04e35;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+              </svg>
+              <h2 style="color:#fff;font-size:24px;margin:0 0 16px;font-weight:700;">Ad Blocker Detected</h2>
+              <p style="color:#94a3b8;font-size:16px;line-height:1.6;margin:0 0 24px;">
+                PanelDrop is free and relies on ads to stay online. Please disable your ad blocker to continue watching.
+              </p>
+              <button id="adblock-refresh" style="background:#f04e35;color:#fff;border:none;padding:12px 32px;font-size:16px;font-weight:600;border-radius:6px;cursor:pointer;transition:all 0.2s;">
+                I've Disabled My Ad Blocker
+              </button>
+              <p style="color:#64748b;font-size:13px;margin:16px 0 0;">Thank you for supporting PanelDrop! 🙏</p>
+            `;
+            
+            overlay.appendChild(modal);
+            document.body.appendChild(overlay);
+            
+            // Add hover effect
+            const btn = document.getElementById('adblock-refresh');
+            btn.onmouseenter = () => btn.style.background = '#d43d2a';
+            btn.onmouseleave = () => btn.style.background = '#f04e35';
+            btn.onclick = () => window.location.reload();
+            
+            // Prevent scrolling
+            document.body.style.overflow = 'hidden';
+          }
+        }, 100);
+      })();
+    </script>
   </body>
 </html>
