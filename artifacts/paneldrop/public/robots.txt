@@ -1,2 +1,20 @@
+# robots.txt for PanelDrop
 User-agent: *
 Allow: /
+Disallow: /api/
+
+# Sitemaps
+Sitemap: https://panel-dropanimestreaming.vercel.app/sitemap.xml
+
+# Crawl-delay for polite crawlers
+Crawl-delay: 1
+
+# Block bad bots
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+User-agent: MJ12bot
+Disallow: /
