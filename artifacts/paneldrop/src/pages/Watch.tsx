@@ -429,6 +429,53 @@ export default function Watch() {
   // When a playable stream URL is available, instruct the reference player to play it.
   useEffect(() => {
     if (!streamUrl || !scriptsLoaded) return;
+    
+    // Setup error handler for automatic server switching
+    const handlePlaybackError = async () => {
+      console.log('[PanelDrop] Playback error detected, attempting to switch servers...');
+      
+      // Get all available providers
+      const allProviders = Object.keys(episodesPayload?.providers || {});
+      const currentProvider = selectedProvider;
+      
+      // Try each provider that isn't the current one
+      for (const otherProv of allProviders) {
+        if (otherProv === currentProvider) continue;
+        
+        const candidateList = (episodesPayload?.providers?.[otherProv]?.episodes || {})[selectedCategory] || [];
+        const matching = candidateList.find((ep: any) => ep.number === selectedEpisode?.number);
+        
+        if (!matching) continue;
+        
+        const otherParsed = parseEpisodeId(matching.id);
+        const tryUrl = buildApiUrl(`watch/${otherProv}/${params.id}/${otherParsed.category}/${otherParsed.slug}`);
+        
+        try {
+          const r = await fetch(tryUrl);
+          if (!r.ok) continue;
+          const p = await r.json();
+          const norm = normalizeStreamPayload(p);
+          
+          if (norm && norm.streams && norm.streams.length > 0) {
+            console.log(`[PanelDrop] Successfully switched to provider: ${otherProv}`);
+            setStreamData(norm);
+            setSelectedProvider(otherProv);
+            setSelectedQuality('auto');
+            return; // Success! Stop trying other providers
+          }
+        } catch (err) {
+          console.log(`[PanelDrop] Failed to switch to provider: ${otherProv}`, err);
+          continue;
+        }
+      }
+      
+      // If we get here, all providers failed
+      setError('All available servers failed to load. Please try again later.');
+    };
+    
+    // Expose the error handler globally so the video player scripts can call it
+    (window as any).__PANELDROP_SWITCH_SERVER = handlePlaybackError;
+    
     try {
       const K = (window as any).Kurovexa || (window as any).KV_REF;
       if (K && typeof K.play === 'function') {
@@ -450,7 +497,7 @@ export default function Watch() {
     } catch (e) {
       console.warn('Failed to render intro/outro markers', e);
     }
-  }, [streamUrl, streamData, scriptsLoaded]);
+  }, [streamUrl, streamData, scriptsLoaded, episodesPayload, selectedProvider, selectedCategory, selectedEpisode, params.id]);
 
   // The reference player script will create and manage the player DOM and HLS instance.
   // We intentionally do not mount a second <video> or attach Hls here to avoid duplicate players.

@@ -1171,6 +1171,14 @@ function tryNextServer(failedKey) {
     const nextKey = ordered[currentIdx + 1];
 
     if (!nextKey) {
+        // All providers in the current episode list have failed
+        // Try calling the React component's server switcher if available
+        if (window.__PANELDROP_SWITCH_SERVER && typeof window.__PANELDROP_SWITCH_SERVER === 'function') {
+            console.log('[PanelDrop] All current servers failed, trying React-level provider switch...');
+            window.__PANELDROP_SWITCH_SERVER();
+            return;
+        }
+        
         setPlayerError();
         return;
     }
