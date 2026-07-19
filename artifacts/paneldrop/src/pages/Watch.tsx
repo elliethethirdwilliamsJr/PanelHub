@@ -78,6 +78,11 @@ export default function Watch() {
   const [scriptsLoaded, setScriptsLoaded] = useState(false);
   const apiBaseUrl = (import.meta.env.VITE_MIRURO_API_URL || '').trim().replace(/\/$/, '');
 
+  // Auto scroll to top when anime ID changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [params.id]);
+
   const buildApiUrl = (path: string) => {
     const cleanPath = path.replace(/^\/+/, '');
     if (apiBaseUrl) return `${apiBaseUrl}/${cleanPath}`;
@@ -622,6 +627,7 @@ export default function Watch() {
                           if (item.id) {
                             setSearchOpen(false);
                             setLocation(`/anime/${item.id}`);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
                           }
                         }}
                         className="manga-panel h-[260px] group cursor-pointer relative overflow-hidden text-left"

@@ -40,7 +40,14 @@ export default function AnimeInfo() {
   const [searchResults, setSearchResults] = useState<Array<{ id?: number; title?: { romaji?: string; english?: string; native?: string }; coverImage?: { large?: string; extraLarge?: string }; bannerImage?: string; format?: string; status?: string; episodes?: number; startDate?: { year?: number } }>>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(false);
+  const [showFullBannerDesc, setShowFullBannerDesc] = useState(false);
+  const [showFullSynopsis, setShowFullSynopsis] = useState(false);
   const apiBaseUrl = (import.meta.env.VITE_MIRURO_API_URL || '').trim().replace(/\/$/, '');
+
+  // Auto scroll to top when anime ID changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [params.id]);
 
   const buildApiUrl = (path: string) => {
     const cleanPath = path.replace(/^\/+/, '');
@@ -119,6 +126,16 @@ export default function AnimeInfo() {
   const image = anime?.coverImage?.extraLarge || anime?.coverImage?.large || anime?.bannerImage || '';
   const banner = anime?.bannerImage || image;
   const synopsis = useMemo(() => stripHtml(anime?.description), [anime?.description]);
+  
+  // Truncate text helper
+  const getTruncatedText = (text: string, maxLength: number) => {
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength) + '...';
+  };
+
+  const bannerDescMaxLength = 150;
+  const synopsisMaxLength = 300;
+  
   const metadata = [
     anime?.format,
     anime?.status,
@@ -202,6 +219,7 @@ export default function AnimeInfo() {
                           if (item.id) {
                             setSearchOpen(false);
                             setLocation(`/anime/${item.id}`);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
                           }
                         }}
                         className="manga-panel h-[260px] group cursor-pointer relative overflow-hidden text-left"
@@ -264,9 +282,23 @@ export default function AnimeInfo() {
                 <h1 className="font-manga-title text-4xl md:text-6xl uppercase tracking-wider mt-3 max-w-4xl" style={{ textShadow: '2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff' }}>
                   {title}
                 </h1>
-                <p className="mt-3 max-w-3xl border-2 border-black bg-white/90 p-3 font-bold text-sm md:text-base">
-                  {synopsis}
-                </p>
+                <div className="mt-3 max-w-3xl border-2 border-black bg-white/90 p-3">
+                  <p className="font-bold text-sm md:text-base">
+                    {showFullBannerDesc || synopsis.length <= bannerDescMaxLength
+                      ? synopsis
+                      : getTruncatedText(synopsis, bannerDescMaxLength)}
+                  </p>
+                  {synopsis.length > bannerDescMaxLength && (
+                    <button
+                      type="button"
+                      onClick={() => setShowFullBannerDesc(!showFullBannerDesc)}
+                      className="mt-2 text-xs font-black uppercase tracking-[0.2em] hover:underline"
+                      style={{ color: accent }}
+                    >
+                      {showFullBannerDesc ? 'Show Less ↑' : 'Show More ↓'}
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
 
@@ -282,7 +314,21 @@ export default function AnimeInfo() {
 
                 <div className="mt-6">
                   <h2 className="font-manga-title text-2xl uppercase tracking-wide">Synopsis</h2>
-                  <p className="mt-3 text-base leading-7 text-gray-800">{synopsis}</p>
+                  <p className="mt-3 text-base leading-7 text-gray-800">
+                    {showFullSynopsis || synopsis.length <= synopsisMaxLength
+                      ? synopsis
+                      : getTruncatedText(synopsis, synopsisMaxLength)}
+                  </p>
+                  {synopsis.length > synopsisMaxLength && (
+                    <button
+                      type="button"
+                      onClick={() => setShowFullSynopsis(!showFullSynopsis)}
+                      className="mt-2 text-sm font-black uppercase tracking-[0.2em] hover:underline"
+                      style={{ color: accent }}
+                    >
+                      {showFullSynopsis ? 'Show Less ↑' : 'Show More ↓'}
+                    </button>
+                  )}
                 </div>
 
                 <div className="mt-6 flex flex-wrap gap-3">

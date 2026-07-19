@@ -400,7 +400,12 @@ export default function Home() {
                       <button
                         type="button"
                         key={item.id ?? `${title}-${i}`}
-                        onClick={() => item.id && setLocation(`/anime/${item.id}`)}
+                        onClick={() => {
+                          if (item.id) {
+                            setLocation(`/anime/${item.id}`);
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                          }
+                        }}
                         className="manga-panel h-[260px] group cursor-pointer relative overflow-hidden text-left"
                       >
                         <div className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 ${coverImageClass}`} style={{ backgroundImage: `url(${image})` }} />
@@ -452,12 +457,18 @@ export default function Home() {
             <div
               role="button"
               tabIndex={0}
-              onClick={() => heroData.id && setLocation(`/anime/${heroData.id}`)}
+              onClick={() => {
+                if (heroData.id) {
+                  setLocation(`/anime/${heroData.id}`);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+              }}
               onKeyDown={(event) => {
                 if (event.key === 'Enter' || event.key === ' ') {
                   event.preventDefault();
                   if (heroData.id) {
                     setLocation(`/anime/${heroData.id}`);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }
                 }
               }}
@@ -498,6 +509,7 @@ export default function Home() {
                     event.stopPropagation();
                     if (heroData.id) {
                       setLocation(`/anime/${heroData.id}`);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
                   }}
                   className="mt-4 font-manga-title text-xl px-8 py-3 border-4 border-black text-white transition-all hover:-translate-y-1 hover:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] active:translate-y-0 active:shadow-none"
@@ -531,7 +543,12 @@ export default function Home() {
                   <button
                     type="button"
                     key={i}
-                    onClick={() => item.id && setLocation(`/anime/${item.id}`)}
+                    onClick={() => {
+                      if (item.id) {
+                        setLocation(`/anime/${item.id}`);
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                      }
+                    }}
                     className="flex items-center p-3 hover:text-white transition-colors cursor-pointer manga-border-bottom last:border-b-0 group text-left"
                     onMouseEnter={e => { (e.currentTarget as HTMLElement).style.backgroundColor = accent; (e.currentTarget as HTMLElement).style.color = 'white'; }}
                     onMouseLeave={e => { (e.currentTarget as HTMLElement).style.backgroundColor = ''; (e.currentTarget as HTMLElement).style.color = ''; }}
