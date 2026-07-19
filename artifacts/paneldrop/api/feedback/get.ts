@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import admin from 'firebase-admin';
+import * as admin from 'firebase-admin';
 
 // Initialize Firebase Admin (only once)
 if (!admin.apps.length) {
@@ -12,7 +12,7 @@ if (!admin.apps.length) {
       };
 
   admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
+    credential: admin.credential.cert(serviceAccount as any),
   });
 }
 
