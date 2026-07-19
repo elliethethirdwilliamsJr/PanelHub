@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 const accent = '#f04e35';
 
 // Update this version number when you want to show the popup again
-const CURRENT_VERSION = 'v1.0.0';
+const CURRENT_VERSION = 'v1.1.0';
 
 interface Update {
   icon: string;
@@ -13,19 +13,34 @@ interface Update {
 
 const updates: Update[] = [
   {
+    icon: '🔥',
+    title: 'Direct Firebase Integration',
+    description: 'Lightning-fast feedback system now connects directly to Firestore. No more errors!',
+  },
+  {
+    icon: '📱',
+    title: 'Mobile Font Improvements',
+    description: 'Clean, readable Roboto font on mobile devices. Bold titles for better readability.',
+  },
+  {
+    icon: '🎨',
+    title: 'Ad Control Settings',
+    description: 'Toggle ads on/off with the new Ad Settings modal. Your choice, your experience!',
+  },
+  {
+    icon: '📡',
+    title: 'Offline Detection',
+    description: 'Smart network error detection shows you when you\'re offline instead of confusing errors.',
+  },
+  {
     icon: '🚀',
     title: 'Automatic Server Switching',
     description: 'Videos now automatically switch to working servers when one fails. No more interruptions!',
   },
   {
-    icon: '🎬',
-    title: 'Enhanced Video Player',
-    description: 'Smooth HD streaming with quality selection and auto-skip intro/outro features.',
-  },
-  {
     icon: '💬',
     title: 'Community Feedback',
-    description: 'Share your thoughts and see what others are saying about PanelDrop!',
+    description: 'Share your thoughts and see what others are saying about PanelDrop in real-time!',
   },
   {
     icon: '⚡',
@@ -37,26 +52,16 @@ const updates: Update[] = [
     title: 'Better Search',
     description: 'Find your favorite anime faster with improved search functionality.',
   },
-  {
-    icon: '📱',
-    title: 'Mobile Optimized',
-    description: 'Enjoy a smooth experience on any device - phone, tablet, or desktop.',
-  },
 ];
 
 export default function WhatsNewPopup() {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    // Check if user has already seen this version
-    const lastSeenVersion = localStorage.getItem('paneldrop_last_seen_version');
-    
-    if (lastSeenVersion !== CURRENT_VERSION) {
-      // Show popup after a short delay for smooth entrance
-      setTimeout(() => {
-        setIsOpen(true);
-      }, 1000);
-    }
+    // Always show popup on every visit after a short delay
+    setTimeout(() => {
+      setIsOpen(true);
+    }, 1000);
   }, []);
 
   useEffect(() => {
@@ -74,8 +79,7 @@ export default function WhatsNewPopup() {
   }, [isOpen]);
 
   const handleClose = () => {
-    // Save that user has seen this version
-    localStorage.setItem('paneldrop_last_seen_version', CURRENT_VERSION);
+    // Just close the modal, don't save to localStorage so it shows every time
     setIsOpen(false);
   };
 
