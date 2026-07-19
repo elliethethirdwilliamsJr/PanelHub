@@ -10,6 +10,12 @@ import Watch from "@/pages/Watch";
 const queryClient = new QueryClient();
 
 function Router() {
+  // Log current path for debugging
+  if (typeof window !== 'undefined') {
+    console.log('[Router] Current path:', window.location.pathname);
+    console.log('[Router] Base URL:', import.meta.env.BASE_URL);
+  }
+
   return (
     <Switch>
       <Route path="/" component={Home} />
