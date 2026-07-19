@@ -1,8 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import * as admin from 'firebase-admin';
+
+// Use require for firebase-admin to avoid TypeScript module resolution issues
+const admin = require('firebase-admin');
 
 // Initialize Firebase Admin (only once)
-if (!(admin as any).apps.length) {
+if (!admin.apps.length) {
   const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT 
     ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
     : {
@@ -11,12 +13,12 @@ if (!(admin as any).apps.length) {
         privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
       };
 
-  (admin as any).initializeApp({
-    credential: (admin as any).credential.cert(serviceAccount),
+  admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
   });
 }
 
-const db = (admin as any).firestore();
+const db = admin.firestore();
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Set CORS headers
@@ -46,7 +48,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const feedbackData = {
       username: username?.trim() || 'Anonymous',
       comment: comment.trim(),
-      timestamp: (admin as any).firestore.FieldValue.serverTimestamp(),
+      timestamp: admin.firestore.FieldValue.serverTimestamp(),
       createdAt: new Date().toISOString(),
     };
 
