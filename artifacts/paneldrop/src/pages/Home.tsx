@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'wouter';
 import { CATEGORY_DATA } from '@/data/content';
+import FeedbackSection from '@/components/FeedbackSection';
 import '@/styles/manga.css';
 
 interface LiveAnimeItem {
@@ -490,6 +491,13 @@ export default function Home() {
             </button>
           </div>
         </div>
+
+      </main>
+
+      {/* Feedback Section */}
+      <FeedbackSection />
+
+      <main className="max-w-[1400px] mx-auto p-4 flex flex-col gap-6">
 
         {/* Popular Row */}
         <div className="mt-4">
