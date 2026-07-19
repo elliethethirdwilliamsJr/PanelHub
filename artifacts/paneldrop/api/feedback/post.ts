@@ -2,7 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import * as admin from 'firebase-admin';
 
 // Initialize Firebase Admin (only once)
-if (!admin.apps.length) {
+if (!(admin as any).apps.length) {
   const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT 
     ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
     : {
@@ -11,12 +11,12 @@ if (!admin.apps.length) {
         privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
       };
 
-  admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount as any),
+  (admin as any).initializeApp({
+    credential: (admin as any).credential.cert(serviceAccount),
   });
 }
 
-const db = admin.firestore();
+const db = (admin as any).firestore();
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // Set CORS headers
@@ -46,7 +46,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const feedbackData = {
       username: username?.trim() || 'Anonymous',
       comment: comment.trim(),
-      timestamp: admin.firestore.FieldValue.serverTimestamp(),
+      timestamp: (admin as any).firestore.FieldValue.serverTimestamp(),
       createdAt: new Date().toISOString(),
     };
 
