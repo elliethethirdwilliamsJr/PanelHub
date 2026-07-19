@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import AlertModal from '@/components/AlertModal';
 
 const accent = '#f04e35';
 
 export default function OfflineModal() {
   const [isOffline, setIsOffline] = useState(false);
+  const [showStillOfflineAlert, setShowStillOfflineAlert] = useState(false);
 
   useEffect(() => {
     const handleOnline = () => {
@@ -46,14 +48,22 @@ export default function OfflineModal() {
       setIsOffline(false);
       window.location.reload();
     } else {
-      alert('Still no internet connection. Please check your network and try again.');
+      setShowStillOfflineAlert(true);
     }
   };
 
   if (!isOffline) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-4 animate-in fade-in duration-300">
+    <>
+      <AlertModal
+        isOpen={showStillOfflineAlert}
+        onClose={() => setShowStillOfflineAlert(false)}
+        title="Still Offline"
+        message="Still no internet connection. Please check your network and try again."
+        type="error"
+      />
+      <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/80 p-4 animate-in fade-in duration-300">
       <div
         className="manga-panel w-full max-w-md bg-white shadow-[10px_10px_0_0_rgba(0,0,0,1)] animate-in zoom-in-95 duration-500"
         style={{
@@ -139,6 +149,7 @@ export default function OfflineModal() {
           }
         }
       `}</style>
-    </div>
+      </div>
+    </>
   );
 }

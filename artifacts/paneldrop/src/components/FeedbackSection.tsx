@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, query, orderBy, limit, getDocs, serverTimestamp } from 'firebase/firestore';
+import AlertModal from '@/components/AlertModal';
 
 interface Feedback {
   id: string;
@@ -19,6 +20,12 @@ export default function FeedbackSection() {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [alertModal, setAlertModal] = useState<{ isOpen: boolean; title: string; message: string; type: 'success' | 'error' | 'info' }>({
+    isOpen: false,
+    title: '',
+    message: '',
+    type: 'info',
+  });
 
   // Fetch feedback directly from Firestore
   useEffect(() => {
@@ -92,11 +99,21 @@ export default function FeedbackSection() {
       
       setFeedbackList(feedback);
 
-      alert('Thank you for your feedback!');
+      setAlertModal({
+        isOpen: true,
+        title: 'Success',
+        message: 'Thank you for your feedback!',
+        type: 'success',
+      });
     } catch (err: any) {
       console.error('Error submitting feedback:', err);
       setError(err.message || 'Failed to submit feedback');
-      alert(err.message || 'Failed to submit feedback. Please try again.');
+      setAlertModal({
+        isOpen: true,
+        title: 'Error',
+        message: err.message || 'Failed to submit feedback. Please try again.',
+        type: 'error',
+      });
     } finally {
       setSubmitting(false);
     }
@@ -123,6 +140,13 @@ export default function FeedbackSection() {
 
   return (
     <section className="w-full py-12 md:py-16" data-feedback-section>
+      <AlertModal
+        isOpen={alertModal.isOpen}
+        onClose={() => setAlertModal({ ...alertModal, isOpen: false })}
+        title={alertModal.title}
+        message={alertModal.message}
+        type={alertModal.type}
+      />
       <div className="max-w-[1500px] mx-auto px-4 md:px-8">
         {/* Section Header */}
         <div className="manga-panel p-6 md:p-8 mb-8">

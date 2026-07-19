@@ -13,42 +13,42 @@ interface Update {
 
 const updates: Update[] = [
   {
-    icon: '🔥',
+    icon: '',
     title: 'Direct Firebase Integration',
     description: 'Lightning-fast feedback system now connects directly to Firestore. No more errors!',
   },
   {
-    icon: '📱',
+    icon: '',
     title: 'Mobile Font Improvements',
     description: 'Clean, readable Roboto font on mobile devices. Bold titles for better readability.',
   },
   {
-    icon: '🎨',
+    icon: '',
     title: 'Ad Control Settings',
     description: 'Toggle ads on/off with the new Ad Settings modal. Your choice, your experience!',
   },
   {
-    icon: '📡',
+    icon: '',
     title: 'Offline Detection',
     description: 'Smart network error detection shows you when you\'re offline instead of confusing errors.',
   },
   {
-    icon: '🚀',
+    icon: '',
     title: 'Automatic Server Switching',
     description: 'Videos now automatically switch to working servers when one fails. No more interruptions!',
   },
   {
-    icon: '💬',
+    icon: '',
     title: 'Community Feedback',
     description: 'Share your thoughts and see what others are saying about PanelDrop in real-time!',
   },
   {
-    icon: '⚡',
+    icon: '',
     title: 'Lightning Fast',
     description: 'Optimized loading times and seamless navigation across all pages.',
   },
   {
-    icon: '🔍',
+    icon: '',
     title: 'Better Search',
     description: 'Find your favorite anime faster with improved search functionality.',
   },

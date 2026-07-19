@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useParams } from 'wouter';
+import AlertModal from '@/components/AlertModal';
 import '@/styles/manga.css';
 import '@/styles/kv-player.css';
 
@@ -76,6 +77,7 @@ export default function Watch() {
   const [selectedQuality, setSelectedQuality] = useState('auto');
   const [selectedSubtitle, setSelectedSubtitle] = useState('');
   const [scriptsLoaded, setScriptsLoaded] = useState(false);
+  const [shareAlert, setShareAlert] = useState(false);
   const apiBaseUrl = (import.meta.env.VITE_MIRURO_API_URL || '').trim().replace(/\/$/, '');
 
   // Auto scroll to top when anime ID changes
@@ -540,6 +542,13 @@ export default function Watch() {
 
   return (
     <div className="min-h-screen bg-[#faf7f1] text-black">
+      <AlertModal
+        isOpen={shareAlert}
+        onClose={() => setShareAlert(false)}
+        title="Link Copied"
+        message="Link copied to clipboard! Share it with your friends."
+        type="success"
+      />
       <nav className="flex w-full manga-border-bottom bg-white relative z-50 sticky top-0">
         <div className="flex-none px-6 py-4 manga-border-right flex items-center justify-center text-white transition-colors duration-300" style={{ backgroundColor: accent }}>
           <img src="/sitelogo.png" alt="PanelDrop" className="h-10 w-auto" />
@@ -555,7 +564,7 @@ export default function Watch() {
             onClick={() => {
               const url = window.location.href;
               navigator.clipboard.writeText(url).then(() => {
-                alert('Link copied to clipboard! Share it with your friends 🎉');
+                setShareAlert(true);
               }).catch(() => {
                 prompt('Copy this link:', url);
               });
