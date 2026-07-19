@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'wouter';
 import { CATEGORY_DATA } from '@/data/content';
 import FeedbackSection from '@/components/FeedbackSection';
+import WhatsNewPopup from '@/components/WhatsNewPopup';
 import '@/styles/manga.css';
 
 interface LiveAnimeItem {
@@ -249,6 +250,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white overflow-x-hidden font-manga-body text-black selection:text-white" style={{ '--accent': accent } as React.CSSProperties}>
+      
+      {/* What's New Popup */}
+      <WhatsNewPopup />
       
       {/* Navigation */}
       <nav className="flex w-full manga-border-bottom bg-white relative z-50 sticky top-0">

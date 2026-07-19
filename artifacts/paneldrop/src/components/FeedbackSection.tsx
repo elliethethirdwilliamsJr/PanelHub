@@ -47,14 +47,20 @@ const accent = '#f04e35';
 export default function FeedbackSection() {
   const [feedbackList] = useState<Feedback[]>(mockFeedback);
   const [newComment, setNewComment] = useState('');
+  const [username, setUsername] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newComment.trim()) return;
     
     // TODO: Add API call to submit feedback
-    console.log('Submitting feedback:', newComment);
+    const feedbackData = {
+      comment: newComment,
+      username: username.trim() || 'Anonymous',
+    };
+    console.log('Submitting feedback:', feedbackData);
     setNewComment('');
+    setUsername('');
   };
 
   return (
@@ -143,6 +149,23 @@ export default function FeedbackSection() {
               </h3>
               
               <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <label className="block font-manga-body text-xs font-black uppercase tracking-[0.2em] mb-2">
+                    Username (Optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    placeholder="Enter your name or leave blank for Anonymous"
+                    className="w-full border-4 border-black bg-white px-4 py-3 font-manga-body text-sm outline-none shadow-[4px_4px_0_0_rgba(0,0,0,1)] focus:shadow-[6px_6px_0_0_rgba(0,0,0,1)] transition-shadow"
+                    maxLength={30}
+                  />
+                  <p className="text-[10px] text-gray-500 mt-1 font-bold uppercase tracking-wider">
+                    Leave blank to post as "Anonymous"
+                  </p>
+                </div>
+
                 <div>
                   <label className="block font-manga-body text-xs font-black uppercase tracking-[0.2em] mb-2">
                     Your Feedback
