@@ -547,6 +547,21 @@ export default function Watch() {
         <div className="flex-none px-4 py-4 manga-border-left flex items-center gap-2">
           <button
             type="button"
+            onClick={() => {
+              const url = window.location.href;
+              navigator.clipboard.writeText(url).then(() => {
+                alert('Link copied to clipboard! Share it with your friends 🎉');
+              }).catch(() => {
+                prompt('Copy this link:', url);
+              });
+            }}
+            className="border-2 border-black px-3 py-2 text-xs font-black uppercase tracking-[0.2em] bg-white hover:bg-black hover:text-white transition-colors shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
+            title="Share this anime"
+          >
+            Share
+          </button>
+          <button
+            type="button"
             onClick={() => setSearchOpen(prev => !prev)}
             className="border-2 border-black px-3 py-2 text-xs font-black uppercase tracking-[0.2em] bg-white hover:bg-black hover:text-white transition-colors shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
           >
