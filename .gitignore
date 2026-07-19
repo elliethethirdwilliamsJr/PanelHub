@@ -61,3 +61,5 @@ Thumbs.db
 !components.json
 !vercel.json
 !.vercel/project.json
+artifacts\paneldrop\.env.example
+artifacts\paneldrop\.env

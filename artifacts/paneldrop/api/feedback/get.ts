@@ -3,12 +3,16 @@ import admin from 'firebase-admin';
 
 // Initialize Firebase Admin (only once)
 if (!admin.apps.length) {
+  const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT 
+    ? JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT)
+    : {
+        projectId: process.env.FIREBASE_PROJECT_ID,
+        clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+        privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
+      };
+
   admin.initializeApp({
-    credential: admin.credential.cert({
-      projectId: process.env.FIREBASE_PROJECT_ID,
-      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
-      privateKey: process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-    }),
+    credential: admin.credential.cert(serviceAccount as admin.ServiceAccount),
   });
 }
 
@@ -37,7 +41,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .limit(limit)
       .get();
 
-    const feedback = snapshot.docs.map(doc => ({
+    const feedback = snapshot.docs.map((doc: any) => ({
       id: doc.id,
       ...doc.data(),
     }));
