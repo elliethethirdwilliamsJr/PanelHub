@@ -32,6 +32,7 @@ interface LiveAnimeState {
 }
 
 export default function Home() {
+  const coverImageClass = '';
   const [, setLocation] = useLocation();
   const [liveAnime, setLiveAnime] = useState<LiveAnimeState>({ hero: null, top10: null });
   const [popularAnime, setPopularAnime] = useState<LiveAnimeItem[]>([]);
