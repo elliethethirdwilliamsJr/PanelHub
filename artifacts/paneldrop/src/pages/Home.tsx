@@ -42,12 +42,18 @@ export default function Home() {
   const [popularHasNextPage, setPopularHasNextPage] = useState(false);
   const [popularLoading, setPopularLoading] = useState(true);
   const [popularError, setPopularError] = useState(false);
+  const [upcomingAnime, setUpcomingAnime] = useState<LiveAnimeItem[]>([]);
+  const [upcomingLoading, setUpcomingLoading] = useState(true);
+  const [scheduleAnime, setScheduleAnime] = useState<LiveAnimeItem[]>([]);
+  const [scheduleLoading, setScheduleLoading] = useState(true);
+  const [recentAnime, setRecentAnime] = useState<LiveAnimeItem[]>([]);
+  const [recentLoading, setRecentLoading] = useState(true);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<LiveAnimeItem[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(false);
-  const [coverStyle, setCoverStyle] = useState<'grayscale' | 'color'>('grayscale');
+  const [coverStyle, setCoverStyle] = useState<'grayscale' | 'color'>('color');
   const popularScrollRef = useRef<HTMLDivElement | null>(null);
   const popularLoaderRef = useRef<(page: number, append?: boolean) => Promise<void>>(() => Promise.resolve());
   const popularLoadingRef = useRef(false);
@@ -85,6 +91,54 @@ export default function Home() {
       setBrowseHasNextPage(false);
     } finally {
       setBrowseLoading(false);
+    }
+  };
+
+  const loadUpcoming = async () => {
+    setUpcomingLoading(true);
+    try {
+      const response = await fetch(buildApiUrl('upcoming?page=1&per_page=10'));
+      if (!response.ok) throw new Error('Failed to load upcoming anime');
+
+      const payload = await response.json();
+      const results = Array.isArray(payload?.results) ? payload.results : [];
+      setUpcomingAnime(results);
+    } catch {
+      setUpcomingAnime([]);
+    } finally {
+      setUpcomingLoading(false);
+    }
+  };
+
+  const loadSchedule = async () => {
+    setScheduleLoading(true);
+    try {
+      const response = await fetch(buildApiUrl('schedule?page=1&per_page=10'));
+      if (!response.ok) throw new Error('Failed to load schedule');
+
+      const payload = await response.json();
+      const results = Array.isArray(payload?.results) ? payload.results : [];
+      setScheduleAnime(results);
+    } catch {
+      setScheduleAnime([]);
+    } finally {
+      setScheduleLoading(false);
+    }
+  };
+
+  const loadRecent = async () => {
+    setRecentLoading(true);
+    try {
+      const response = await fetch(buildApiUrl('recent?page=1&per_page=10'));
+      if (!response.ok) throw new Error('Failed to load recent anime');
+
+      const payload = await response.json();
+      const results = Array.isArray(payload?.results) ? payload.results : [];
+      setRecentAnime(results);
+    } catch {
+      setRecentAnime([]);
+    } finally {
+      setRecentLoading(false);
     }
   };
 
@@ -193,6 +247,9 @@ export default function Home() {
     void loadSpotlight();
     void loadPopular(1, false);
     void loadBrowsePage(1);
+    void loadUpcoming();
+    void loadSchedule();
+    void loadRecent();
 
     return () => {
       cancelled = true;
@@ -572,6 +629,156 @@ export default function Home() {
           ) : null}
         </div>
 
+        {/* Upcoming Anime Section */}
+        <div className="mt-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-3 h-10 border-4 border-black" style={{ backgroundColor: accent }} />
+            <h2 className="font-manga-title text-4xl uppercase tracking-wider">Upcoming Releases</h2>
+          </div>
+          <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory manga-scrollbar-thin">
+            {upcomingLoading ? (
+              Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="manga-panel min-w-[220px] max-w-[220px] h-[320px] animate-pulse overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)] snap-start">
+                  <div className="absolute inset-0 bg-gray-200" />
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-white/90 border-t-4 border-black" />
+                </div>
+              ))
+            ) : upcomingAnime.length > 0 ? (
+              upcomingAnime.map((item, i) => {
+                const title = item.title?.english || item.title?.romaji || item.title?.native || `Anime ${i + 1}`;
+                const image = item.coverImage?.large || item.bannerImage || data.hero.image;
+                const meta = [item.format, item.season, item.seasonYear].filter(Boolean).join(' • ');
+
+                return (
+                  <button
+                    type="button"
+                    key={item.id ?? `${title}-${i}`}
+                    onClick={() => item.id && setLocation(`/anime/${item.id}`)}
+                    className="manga-panel min-w-[220px] max-w-[220px] h-[320px] group cursor-pointer relative flex items-end p-3 overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)] snap-start text-left"
+                  >
+                    <div
+                      className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 ${coverImageClass}`}
+                      style={{ backgroundImage: `url(${image})` }}
+                    />
+                    <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-300 mix-blend-multiply" style={{ backgroundColor: accent }} />
+                    <div className="manga-speedlines opacity-25 group-hover:opacity-45 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                    <div className="relative z-10 bg-white border-4 border-black p-3 w-full shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+                      <p className="font-manga-body font-black text-[10px] uppercase tracking-[0.2em] text-white inline-block px-2 py-1 border-2 border-black mb-2" style={{ backgroundColor: accent }}>
+                        Coming Soon
+                      </p>
+                      <h3 className="font-manga-title text-xl uppercase leading-tight">{title}</h3>
+                      {meta ? <p className="text-xs mt-1 text-gray-700 font-bold uppercase">{meta}</p> : null}
+                    </div>
+                  </button>
+                );
+              })
+            ) : (
+              <p className="text-sm font-bold uppercase tracking-wider text-gray-600">No upcoming anime available</p>
+            )}
+          </div>
+        </div>
+
+        {/* Schedule Section */}
+        <div className="mt-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-3 h-10 border-4 border-black" style={{ backgroundColor: accent }} />
+            <h2 className="font-manga-title text-4xl uppercase tracking-wider">Airing Schedule</h2>
+          </div>
+          <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory manga-scrollbar-thin">
+            {scheduleLoading ? (
+              Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="manga-panel min-w-[220px] max-w-[220px] h-[320px] animate-pulse overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)] snap-start">
+                  <div className="absolute inset-0 bg-gray-200" />
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-white/90 border-t-4 border-black" />
+                </div>
+              ))
+            ) : scheduleAnime.length > 0 ? (
+              scheduleAnime.map((item, i) => {
+                const title = item.title?.english || item.title?.romaji || item.title?.native || `Anime ${i + 1}`;
+                const image = item.coverImage?.large || item.bannerImage || data.hero.image;
+                const meta = [item.format, item.episodes ? `Ep ${item.episodes}` : null].filter(Boolean).join(' • ');
+
+                return (
+                  <button
+                    type="button"
+                    key={item.id ?? `${title}-${i}`}
+                    onClick={() => item.id && setLocation(`/anime/${item.id}`)}
+                    className="manga-panel min-w-[220px] max-w-[220px] h-[320px] group cursor-pointer relative flex items-end p-3 overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)] snap-start text-left"
+                  >
+                    <div
+                      className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 ${coverImageClass}`}
+                      style={{ backgroundImage: `url(${image})` }}
+                    />
+                    <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-300 mix-blend-multiply" style={{ backgroundColor: accent }} />
+                    <div className="manga-speedlines opacity-25 group-hover:opacity-45 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                    <div className="relative z-10 bg-white border-4 border-black p-3 w-full shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+                      <p className="font-manga-body font-black text-[10px] uppercase tracking-[0.2em] text-white inline-block px-2 py-1 border-2 border-black mb-2" style={{ backgroundColor: accent }}>
+                        On Air
+                      </p>
+                      <h3 className="font-manga-title text-xl uppercase leading-tight">{title}</h3>
+                      {meta ? <p className="text-xs mt-1 text-gray-700 font-bold uppercase">{meta}</p> : null}
+                    </div>
+                  </button>
+                );
+              })
+            ) : (
+              <p className="text-sm font-bold uppercase tracking-wider text-gray-600">No schedule available</p>
+            )}
+          </div>
+        </div>
+
+        {/* Recent/This Season Section */}
+        <div className="mt-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-3 h-10 border-4 border-black" style={{ backgroundColor: accent }} />
+            <h2 className="font-manga-title text-4xl uppercase tracking-wider">This Season</h2>
+          </div>
+          <div className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory manga-scrollbar-thin">
+            {recentLoading ? (
+              Array.from({ length: 6 }).map((_, index) => (
+                <div key={index} className="manga-panel min-w-[220px] max-w-[220px] h-[320px] animate-pulse overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)] snap-start">
+                  <div className="absolute inset-0 bg-gray-200" />
+                  <div className="absolute inset-x-0 bottom-0 h-24 bg-white/90 border-t-4 border-black" />
+                </div>
+              ))
+            ) : recentAnime.length > 0 ? (
+              recentAnime.map((item, i) => {
+                const title = item.title?.english || item.title?.romaji || item.title?.native || `Anime ${i + 1}`;
+                const image = item.coverImage?.large || item.bannerImage || data.hero.image;
+                const meta = [item.format, item.status, item.season].filter(Boolean).join(' • ');
+
+                return (
+                  <button
+                    type="button"
+                    key={item.id ?? `${title}-${i}`}
+                    onClick={() => item.id && setLocation(`/anime/${item.id}`)}
+                    className="manga-panel min-w-[220px] max-w-[220px] h-[320px] group cursor-pointer relative flex items-end p-3 overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)] snap-start text-left"
+                  >
+                    <div
+                      className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 ${coverImageClass}`}
+                      style={{ backgroundImage: `url(${image})` }}
+                    />
+                    <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-300 mix-blend-multiply" style={{ backgroundColor: accent }} />
+                    <div className="manga-speedlines opacity-25 group-hover:opacity-45 transition-opacity" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
+                    <div className="relative z-10 bg-white border-4 border-black p-3 w-full shadow-[4px_4px_0_0_rgba(0,0,0,1)]">
+                      <p className="font-manga-body font-black text-[10px] uppercase tracking-[0.2em] text-white inline-block px-2 py-1 border-2 border-black mb-2" style={{ backgroundColor: accent }}>
+                        New
+                      </p>
+                      <h3 className="font-manga-title text-xl uppercase leading-tight">{title}</h3>
+                      {meta ? <p className="text-xs mt-1 text-gray-700 font-bold uppercase">{meta}</p> : null}
+                    </div>
+                  </button>
+                );
+              })
+            ) : (
+              <p className="text-sm font-bold uppercase tracking-wider text-gray-600">No recent anime available</p>
+            )}
+          </div>
+        </div>
+
         {/* Grid */}
         <div className="mt-6">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-4">
@@ -666,7 +873,7 @@ export default function Home() {
             <div className="flex flex-col items-center md:items-start text-center md:text-left gap-2">
               <h2 className="font-manga-title text-6xl tracking-widest drop-shadow-[3px_3px_0_rgba(0,0,0,1)]">PANELDROP</h2>
               <p className="font-manga-body font-black text-sm uppercase tracking-widest bg-black text-white px-3 py-1 inline-block">Read. Watch. Experience.</p>
-              <p className="font-manga-body text-xs mt-2 opacity-80 font-bold">© 2025 elliecodelab. All rights reserved.</p>
+              <p className="font-manga-body text-xs mt-2 opacity-80 font-bold">© 2026 elliecodelab. All rights reserved.</p>
             </div>
 
             {/* Center */}
