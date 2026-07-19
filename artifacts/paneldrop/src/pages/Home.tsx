@@ -555,10 +555,8 @@ export default function Home() {
 
       </main>
 
-      {/* Feedback Section */}
+      {/* Feedback Section - Moved above footer */}
       <FeedbackSection />
-
-      <main className="max-w-[1400px] mx-auto p-4 flex flex-col gap-6">
 
         {/* Popular Row */}
         <div className="mt-4">
@@ -860,6 +858,9 @@ export default function Home() {
         </div>
 
       </main>
+
+      {/* Feedback Section - Moved above footer */}
+      <FeedbackSection />
 
       {/* Footer */}
       <footer className="manga-border-top text-white mt-16 relative overflow-hidden transition-colors duration-300" style={{ backgroundColor: accent }}>

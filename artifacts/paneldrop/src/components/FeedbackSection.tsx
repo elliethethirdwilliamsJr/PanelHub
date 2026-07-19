@@ -101,7 +101,7 @@ export default function FeedbackSection() {
                 </div>
               ) : (
                 <div className="space-y-4 manga-scrollbar-thin" style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                  {feedbackList.slice(0, 3).map((feedback) => (
+                  {feedbackList.map((feedback) => (
                     <div
                       key={feedback.id}
                       className="border-2 border-black p-4 bg-white shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] transition-all"
