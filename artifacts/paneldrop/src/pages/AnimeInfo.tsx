@@ -88,6 +88,19 @@ export default function AnimeInfo() {
 
     let cancelled = false;
 
+    // Try to load from localStorage first
+    const cacheKey = `anime_${params.id}`;
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      try {
+        const cachedData = JSON.parse(cached);
+        setAnime(cachedData);
+        setLoading(false);
+      } catch {
+        // Invalid cache, ignore
+      }
+    }
+
     const loadAnime = async () => {
       setLoading(true);
       setError(false);
@@ -98,6 +111,12 @@ export default function AnimeInfo() {
         const payload = await response.json();
         if (!cancelled) {
           setAnime(payload);
+          // Save to localStorage
+          try {
+            localStorage.setItem(cacheKey, JSON.stringify(payload));
+          } catch {
+            // Storage full, ignore
+          }
         }
       } catch {
         if (!cancelled) {

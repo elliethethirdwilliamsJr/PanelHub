@@ -144,6 +144,28 @@ export default function Watch() {
 
     let cancelled = false;
 
+    // Try to load from localStorage first
+    const animeCacheKey = `anime_${params.id}`;
+    const episodesCacheKey = `episodes_${params.id}`;
+    
+    const cachedAnime = localStorage.getItem(animeCacheKey);
+    if (cachedAnime) {
+      try {
+        setAnime(JSON.parse(cachedAnime));
+      } catch {
+        // Invalid cache, ignore
+      }
+    }
+
+    const cachedEpisodes = localStorage.getItem(episodesCacheKey);
+    if (cachedEpisodes) {
+      try {
+        setEpisodesPayload(JSON.parse(cachedEpisodes));
+      } catch {
+        // Invalid cache, ignore
+      }
+    }
+
     const loadAnime = async () => {
       try {
         const response = await fetch(buildApiUrl(`info/${params.id}`));
@@ -151,6 +173,12 @@ export default function Watch() {
         const payload = await response.json();
         if (!cancelled) {
           setAnime(payload);
+          // Save to localStorage
+          try {
+            localStorage.setItem(animeCacheKey, JSON.stringify(payload));
+          } catch {
+            // Storage full, ignore
+          }
         }
       } catch {
         if (!cancelled) {
@@ -166,6 +194,12 @@ export default function Watch() {
         const payload = await response.json();
         if (!cancelled) {
           setEpisodesPayload(payload);
+          // Save to localStorage
+          try {
+            localStorage.setItem(episodesCacheKey, JSON.stringify(payload));
+          } catch {
+            // Storage full, ignore
+          }
         }
       } catch {
         if (!cancelled) {
