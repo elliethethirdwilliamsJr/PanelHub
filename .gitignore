@@ -49,3 +49,15 @@ Thumbs.db
 .cache/
 .local/
 .vercel
+
+# Environment variables (NEVER COMMIT!)
+.env
+.env.local
+.env.*.local
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!components.json
+!vercel.json
+!.vercel/project.json

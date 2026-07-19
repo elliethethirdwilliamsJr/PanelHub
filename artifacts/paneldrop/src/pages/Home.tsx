@@ -3,6 +3,8 @@ import { useLocation } from 'wouter';
 import { CATEGORY_DATA } from '@/data/content';
 import FeedbackSection from '@/components/FeedbackSection';
 import WhatsNewPopup from '@/components/WhatsNewPopup';
+import AdSettingsModal from '@/components/AdSettingsModal';
+import OfflineModal from '@/components/OfflineModal';
 import '@/styles/manga.css';
 
 interface LiveAnimeItem {
@@ -54,6 +56,7 @@ export default function Home() {
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(false);
   const [coverStyle, setCoverStyle] = useState<'grayscale' | 'color'>('color');
+  const [adModalOpen, setAdModalOpen] = useState(false);
   const popularScrollRef = useRef<HTMLDivElement | null>(null);
   const popularLoaderRef = useRef<(page: number, append?: boolean) => Promise<void>>(() => Promise.resolve());
   const popularLoadingRef = useRef(false);
@@ -310,6 +313,12 @@ export default function Home() {
       
       {/* What's New Popup */}
       <WhatsNewPopup />
+      
+      {/* Ad Settings Modal */}
+      <AdSettingsModal isOpen={adModalOpen} onClose={() => setAdModalOpen(false)} />
+      
+      {/* Offline/Error Detection Modal */}
+      <OfflineModal />
       
       {/* Navigation */}
       <nav className="flex w-full manga-border-bottom bg-white relative z-50 sticky top-0">
@@ -861,6 +870,33 @@ export default function Home() {
       <footer className="manga-border-top text-white mt-16 relative overflow-hidden transition-colors duration-300" style={{ backgroundColor: accent }}>
         <div className="manga-speedlines opacity-20 mix-blend-overlay" />
         <div className="manga-halftone opacity-30" />
+        
+        {/* Ad Support Section */}
+        <div className="max-w-[1400px] mx-auto px-6 py-8 relative z-10 border-b-2 border-white/20">
+          <div className="bg-white/10 backdrop-blur-sm border-2 border-white/30 p-6 rounded-lg">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="flex-1 text-center md:text-left">
+                <h3 className="font-manga-title text-2xl uppercase tracking-wide mb-2 flex items-center justify-center md:justify-start gap-2">
+                  Why We Show Ads
+                </h3>
+                <p className="font-manga-body text-sm leading-relaxed opacity-90">
+                  PanelDrop is <strong>completely free</strong> to use! To keep our servers running and provide you with high-quality anime streaming, 
+                  we display small, non-intrusive ads. Your support through ads helps us maintain and improve the platform. 
+                  You can disable ads anytime, but we'd appreciate your support!
+                </p>
+              </div>
+              <div className="flex-shrink-0">
+                <button
+                  type="button"
+                  onClick={() => setAdModalOpen(true)}
+                  className="border-4 border-white bg-black text-white px-6 py-3 font-manga-title text-lg uppercase tracking-wide shadow-[4px_4px_0_0_rgba(255,255,255,0.3)] hover:shadow-[6px_6px_0_0_rgba(255,255,255,0.3)] hover:-translate-y-0.5 transition-all"
+                >
+                  Ad Settings
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
         
         <div className="max-w-[1400px] mx-auto px-6 py-12 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">

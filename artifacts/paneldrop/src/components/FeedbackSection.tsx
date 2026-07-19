@@ -1,66 +1,103 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface Feedback {
   id: string;
   username: string;
   comment: string;
-  timestamp: string;
-  avatar?: string;
+  timestamp?: any;
+  createdAt: string;
 }
-
-// Mock feedback data - replace with real API data later
-const mockFeedback: Feedback[] = [
-  {
-    id: '1',
-    username: 'AnimeFreak99',
-    comment: 'This site is amazing! Finally found a place to watch all my favorite anime in HD. Keep up the great work! 🔥',
-    timestamp: '2 hours ago',
-  },
-  {
-    id: '2',
-    username: 'OtakuMaster',
-    comment: 'Love the interface and the quality of streams. The automatic server switching is a lifesaver when one server goes down.',
-    timestamp: '5 hours ago',
-  },
-  {
-    id: '3',
-    username: 'SakuraFan',
-    comment: 'Best anime streaming site I\'ve used! No annoying registration required and the site loads super fast.',
-    timestamp: '1 day ago',
-  },
-  {
-    id: '4',
-    username: 'NarutoLover',
-    comment: 'The player is smooth and I love that you can skip intros automatically. More anime sites should be like this!',
-    timestamp: '2 days ago',
-  },
-  {
-    id: '5',
-    username: 'AttackOnFan',
-    comment: 'Great selection of anime! Been binge watching here all week. Thank you for this free service! 💯',
-    timestamp: '3 days ago',
-  },
-];
 
 const accent = '#f04e35';
 
 export default function FeedbackSection() {
-  const [feedbackList] = useState<Feedback[]>(mockFeedback);
+  const [feedbackList, setFeedbackList] = useState<Feedback[]>([]);
   const [newComment, setNewComment] = useState('');
   const [username, setUsername] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Fetch feedback from Firebase
+  useEffect(() => {
+    const fetchFeedback = async () => {
+      try {
+        const response = await fetch('/api/feedback/get?limit=50');
+        if (!response.ok) throw new Error('Failed to fetch feedback');
+        
+        const data = await response.json();
+        setFeedbackList(data.feedback || []);
+      } catch (err) {
+        console.error('Error fetching feedback:', err);
+        setError('Failed to load feedback');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    void fetchFeedback();
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newComment.trim()) return;
     
-    // TODO: Add API call to submit feedback
-    const feedbackData = {
-      comment: newComment,
-      username: username.trim() || 'Anonymous',
-    };
-    console.log('Submitting feedback:', feedbackData);
-    setNewComment('');
-    setUsername('');
+    setSubmitting(true);
+    setError(null);
+
+    try {
+      const response = await fetch('/api/feedback/post', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: username.trim() || 'Anonymous',
+          comment: newComment.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to submit feedback');
+      }
+
+      // Clear form
+      setNewComment('');
+      setUsername('');
+
+      // Refresh feedback list
+      const refreshResponse = await fetch('/api/feedback/get?limit=50');
+      if (refreshResponse.ok) {
+        const data = await refreshResponse.json();
+        setFeedbackList(data.feedback || []);
+      }
+
+      alert('Thank you for your feedback!');
+    } catch (err: any) {
+      console.error('Error submitting feedback:', err);
+      setError(err.message || 'Failed to submit feedback');
+      alert('Failed to submit feedback. Please try again.');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const formatTimestamp = (createdAt: string) => {
+    try {
+      const date = new Date(createdAt);
+      const now = new Date();
+      const diffMs = now.getTime() - date.getTime();
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMins / 60);
+      const diffDays = Math.floor(diffHours / 24);
+
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? 's' : ''} ago`;
+      if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+      if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+      return date.toLocaleDateString();
+    } catch {
+      return 'Recently';
+    }
   };
 
   return (
@@ -93,7 +130,27 @@ export default function FeedbackSection() {
                 User Feedback
               </h3>
               
-              {feedbackList.length === 0 ? (
+              {loading ? (
+                <div className="space-y-4">
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="border-2 border-black p-4 bg-gray-100 animate-pulse">
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gray-300" />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-4 bg-gray-300 rounded w-1/3" />
+                          <div className="h-3 bg-gray-300 rounded w-full" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : error ? (
+                <div className="text-center py-12 border-2 border-red-500 bg-red-50">
+                  <p className="font-manga-body text-red-600 text-sm uppercase tracking-[0.2em]">
+                    {error}
+                  </p>
+                </div>
+              ) : feedbackList.length === 0 ? (
                 <div className="text-center py-12">
                   <p className="font-manga-body text-gray-500 text-sm uppercase tracking-[0.2em]">
                     No feedback yet. Be the first to share your thoughts!
@@ -122,7 +179,7 @@ export default function FeedbackSection() {
                               {feedback.username}
                             </h4>
                             <span className="text-[10px] text-gray-500 uppercase tracking-wider">
-                              {feedback.timestamp}
+                              {formatTimestamp(feedback.createdAt)}
                             </span>
                           </div>
                           <p className="font-manga-body text-sm leading-relaxed text-gray-800">
@@ -186,7 +243,7 @@ export default function FeedbackSection() {
 
                 <button
                   type="submit"
-                  disabled={!newComment.trim()}
+                  disabled={!newComment.trim() || submitting}
                   className="w-full border-4 border-black px-6 py-3 font-manga-title text-xl uppercase tracking-wide text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)] transition-all hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0 disabled:hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)]"
                   style={{ backgroundColor: accent }}
                 >
@@ -195,7 +252,7 @@ export default function FeedbackSection() {
                       <path d="M22 2L11 13"/>
                       <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
                     </svg>
-                    Post Comment
+                    {submitting ? 'Posting...' : 'Post Comment'}
                   </span>
                 </button>
               </form>

@@ -84,7 +84,7 @@ export default function WhatsNewPopup() {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/70 p-4 animate-in fade-in duration-300">
       <div
-        className="manga-panel w-full max-w-2xl bg-white shadow-[10px_10px_0_0_rgba(0,0,0,1)] animate-in zoom-in-95 duration-500"
+        className="manga-panel w-full max-w-lg bg-white shadow-[10px_10px_0_0_rgba(0,0,0,1)] animate-in zoom-in-95 duration-500"
         style={{
           animation: 'slideInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)',
           backgroundImage: 'linear-gradient(135deg, rgba(0,0,0,0.02), rgba(0,0,0,0.01))',
@@ -92,60 +92,57 @@ export default function WhatsNewPopup() {
       >
         {/* Header */}
         <div
-          className="border-b-4 border-black p-6 relative overflow-hidden"
+          className="border-b-4 border-black p-4 relative overflow-hidden"
           style={{ backgroundColor: accent }}
         >
           <div className="manga-speedlines opacity-20 absolute inset-0" />
           <div className="relative z-10 flex items-center justify-between">
             <div>
-              <div className="flex items-center gap-3 mb-2">
-                <span className="text-4xl">✨</span>
-                <h2 className="font-manga-title text-3xl md:text-4xl uppercase tracking-wider text-white drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">
-                  What's New
-                </h2>
-              </div>
-              <p className="font-manga-body text-sm font-black uppercase tracking-[0.2em] text-white/90">
+              <h2 className="font-manga-title text-2xl md:text-3xl uppercase tracking-wider text-white drop-shadow-[2px_2px_0_rgba(0,0,0,1)]">
+                What's New
+              </h2>
+              <p className="font-manga-body text-xs font-black uppercase tracking-[0.2em] text-white/90 mt-1">
                 {CURRENT_VERSION} Update
               </p>
             </div>
             <button
               type="button"
               onClick={handleClose}
-              className="border-2 border-black bg-white px-4 py-2 text-xs font-black uppercase tracking-[0.2em] shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:bg-black hover:text-white transition-colors"
+              className="border-2 border-black bg-white px-3 py-2 text-xs font-black uppercase tracking-[0.2em] shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:bg-black hover:text-white transition-colors"
               aria-label="Close"
             >
-              ✕
+              Close
             </button>
           </div>
         </div>
 
         {/* Content */}
-        <div className="p-6 max-h-[60vh] overflow-y-auto">
-          <p className="font-manga-body text-lg mb-6 text-gray-800 leading-relaxed">
+        <div className="p-4 max-h-[60vh] overflow-y-auto">
+          <p className="font-manga-body text-sm mb-4 text-gray-800 leading-relaxed">
             We've been working hard to make PanelDrop even better! Check out what's new:
           </p>
 
-          <div className="space-y-4">
+          <div className="space-y-3">
             {updates.map((update, index) => (
               <div
                 key={index}
-                className="border-2 border-black p-4 bg-white shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[4px_4px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all"
+                className="border-2 border-black p-3 bg-white shadow-[2px_2px_0_0_rgba(0,0,0,1)] hover:shadow-[3px_3px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all"
                 style={{
                   animation: `slideInRight 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) ${index * 0.1}s both`,
                 }}
               >
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-3">
                   <div
-                    className="w-12 h-12 flex-shrink-0 flex items-center justify-center text-2xl border-2 border-black"
+                    className="w-8 h-8 flex-shrink-0 flex items-center justify-center text-lg border-2 border-black"
                     style={{ backgroundColor: `${accent}20` }}
                   >
                     {update.icon}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-manga-title text-xl uppercase tracking-wide mb-1">
+                    <h3 className="font-manga-title text-base uppercase tracking-wide mb-1">
                       {update.title}
                     </h3>
-                    <p className="font-manga-body text-sm text-gray-700 leading-relaxed">
+                    <p className="font-manga-body text-xs text-gray-700 leading-relaxed">
                       {update.description}
                     </p>
                   </div>
@@ -156,12 +153,11 @@ export default function WhatsNewPopup() {
 
           {/* Footer Message */}
           <div
-            className="mt-6 p-4 border-2 border-black"
+            className="mt-4 p-3 border-2 border-black"
             style={{ backgroundColor: `${accent}10` }}
           >
-            <p className="font-manga-body text-sm text-center font-bold">
-              <span style={{ color: accent }}>🎉</span> Thank you for using PanelDrop!{' '}
-              <span style={{ color: accent }}>🎉</span>
+            <p className="font-manga-body text-xs text-center font-bold">
+              Thank you for using PanelDrop!
             </p>
             <p className="font-manga-body text-xs text-center text-gray-600 mt-1">
               We're constantly improving. Share your feedback below!
@@ -170,14 +166,14 @@ export default function WhatsNewPopup() {
         </div>
 
         {/* Footer Button */}
-        <div className="border-t-4 border-black p-4 bg-gray-50 flex flex-col gap-3">
+        <div className="border-t-4 border-black p-3 bg-gray-50 flex flex-col gap-2">
           <button
             type="button"
             onClick={handleClose}
-            className="w-full border-4 border-black px-6 py-3 font-manga-title text-xl uppercase tracking-wide text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)] transition-all hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5"
+            className="w-full border-4 border-black px-6 py-2.5 font-manga-title text-lg uppercase tracking-wide text-white shadow-[4px_4px_0_0_rgba(0,0,0,1)] transition-all hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5"
             style={{ backgroundColor: accent }}
           >
-            Got It! Let's Watch Anime 🚀
+            Got It! Let's Watch Anime
           </button>
           <button
             type="button"
@@ -190,9 +186,9 @@ export default function WhatsNewPopup() {
                 }
               }, 300);
             }}
-            className="w-full border-4 border-black px-6 py-3 font-manga-title text-lg uppercase tracking-wide bg-white text-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] transition-all hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 hover:bg-gray-100"
+            className="w-full border-4 border-black px-6 py-2.5 font-manga-title text-base uppercase tracking-wide bg-white text-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] transition-all hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 hover:bg-gray-100"
           >
-            💬 Share Your Feedback
+            Share Your Feedback
           </button>
         </div>
       </div>
