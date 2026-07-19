@@ -1,28 +1,19 @@
 {
-  "version": 2,
   "buildCommand": "pnpm run build",
   "outputDirectory": "artifacts/paneldrop/dist",
   "installCommand": "pnpm install",
-  "functions": {
-    "artifacts/paneldrop/api/**/*.js": {
-      "maxDuration": 10
-    }
-  },
-  "rewrites": [
+  "routes": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
-  "headers": [
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    },
     {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
+      "src": "/(.*\\.(js|css|png|jpg|jpeg|gif|svg|ico|json|woff|woff2|ttf|eot|webp))",
+      "dest": "/$1"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
