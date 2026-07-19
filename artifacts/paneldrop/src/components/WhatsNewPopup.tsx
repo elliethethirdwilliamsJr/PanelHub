@@ -59,6 +59,20 @@ export default function WhatsNewPopup() {
     }
   }, []);
 
+  useEffect(() => {
+    // Prevent body scroll when modal is open
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    // Cleanup on unmount
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const handleClose = () => {
     // Save that user has seen this version
     localStorage.setItem('paneldrop_last_seen_version', CURRENT_VERSION);
