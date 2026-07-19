@@ -553,11 +553,6 @@ export default function Home() {
           </div>
         </div>
 
-      </main>
-
-      {/* Feedback Section - Moved above footer */}
-      <FeedbackSection />
-
         {/* Popular Row */}
         <div className="mt-4">
           <div className="flex items-center gap-3 mb-4">

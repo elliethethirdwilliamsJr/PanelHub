@@ -64,7 +64,7 @@ export default function FeedbackSection() {
   };
 
   return (
-    <section className="w-full py-12 md:py-16">
+    <section className="w-full py-12 md:py-16" data-feedback-section>
       <div className="max-w-[1500px] mx-auto px-4 md:px-8">
         {/* Section Header */}
         <div className="manga-panel p-6 md:p-8 mb-8">

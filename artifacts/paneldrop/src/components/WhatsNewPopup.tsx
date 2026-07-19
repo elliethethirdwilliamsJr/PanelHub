@@ -170,7 +170,7 @@ export default function WhatsNewPopup() {
         </div>
 
         {/* Footer Button */}
-        <div className="border-t-4 border-black p-4 bg-gray-50">
+        <div className="border-t-4 border-black p-4 bg-gray-50 flex flex-col gap-3">
           <button
             type="button"
             onClick={handleClose}
@@ -178,6 +178,21 @@ export default function WhatsNewPopup() {
             style={{ backgroundColor: accent }}
           >
             Got It! Let's Watch Anime 🚀
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              handleClose();
+              setTimeout(() => {
+                const feedbackSection = document.querySelector('[data-feedback-section]');
+                if (feedbackSection) {
+                  feedbackSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }, 300);
+            }}
+            className="w-full border-4 border-black px-6 py-3 font-manga-title text-lg uppercase tracking-wide bg-white text-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] transition-all hover:shadow-[6px_6px_0_0_rgba(0,0,0,1)] hover:-translate-y-0.5 hover:bg-gray-100"
+          >
+            💬 Share Your Feedback
           </button>
         </div>
       </div>
