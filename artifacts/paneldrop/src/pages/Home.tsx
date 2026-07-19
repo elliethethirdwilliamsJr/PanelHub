@@ -55,7 +55,6 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState<LiveAnimeItem[]>([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [searchError, setSearchError] = useState(false);
-  const [coverStyle, setCoverStyle] = useState<'grayscale' | 'color'>('color');
   const [adModalOpen, setAdModalOpen] = useState(false);
   const popularScrollRef = useRef<HTMLDivElement | null>(null);
   const popularLoaderRef = useRef<(page: number, append?: boolean) => Promise<void>>(() => Promise.resolve());
@@ -282,7 +281,6 @@ export default function Home() {
   const top10Data = liveAnime.top10 || data.top10;
   const showHeroSkeleton = heroLoading;
   const showPopularSkeleton = popularLoading;
-  const coverImageClass = coverStyle === 'grayscale' ? 'grayscale contrast-125 opacity-80 mix-blend-multiply' : 'opacity-90';
 
   const handleSearch = async (event?: React.FormEvent) => {
     event?.preventDefault();
@@ -331,13 +329,6 @@ export default function Home() {
           </div>
         </div>
         <div className="flex-none px-4 py-4 manga-border-left flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setCoverStyle(prev => prev === 'grayscale' ? 'color' : 'grayscale')}
-            className="border-2 border-black px-3 py-2 text-xs font-black uppercase tracking-[0.2em] bg-white hover:bg-black hover:text-white transition-colors shadow-[2px_2px_0_0_rgba(0,0,0,1)]"
-          >
-            {coverStyle === 'grayscale' ? 'Color' : 'Mono'}
-          </button>
           <button
             type="button"
             onClick={() => setSearchOpen(prev => !prev)}
@@ -408,7 +399,7 @@ export default function Home() {
                         }}
                         className="manga-panel h-[260px] group cursor-pointer relative overflow-hidden text-left"
                       >
-                        <div className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 ${coverImageClass}`} style={{ backgroundImage: `url(${image})` }} />
+                        <div className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-90" style={{ backgroundImage: `url(${image})` }} />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent" />
                         <div className="absolute inset-x-0 bottom-0 p-3 bg-white/95 border-t-4 border-black">
                           <h3 className="font-manga-title text-xl uppercase leading-tight">{title}</h3>
@@ -476,7 +467,7 @@ export default function Home() {
             >
               {/* Background Image */}
               <div 
-                className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 ${coverImageClass}`}
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105 opacity-90"
                 style={{ backgroundImage: `url(${heroData.image})` }}
               />
               
@@ -610,7 +601,7 @@ export default function Home() {
                     className="manga-panel min-w-[220px] max-w-[220px] h-[320px] group cursor-pointer relative flex items-end p-3 overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)] snap-start text-left"
                   >
                     <div
-                      className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 ${coverImageClass}`}
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 opacity-90"
                       style={{ backgroundImage: `url(${image})` }}
                     />
                     <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-300 mix-blend-multiply" style={{ backgroundColor: accent }} />
@@ -676,7 +667,7 @@ export default function Home() {
                     className="manga-panel min-w-[220px] max-w-[220px] h-[320px] group cursor-pointer relative flex items-end p-3 overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)] snap-start text-left"
                   >
                     <div
-                      className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 ${coverImageClass}`}
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 opacity-90"
                       style={{ backgroundImage: `url(${image})` }}
                     />
                     <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-300 mix-blend-multiply" style={{ backgroundColor: accent }} />
@@ -726,7 +717,7 @@ export default function Home() {
                     className="manga-panel min-w-[220px] max-w-[220px] h-[320px] group cursor-pointer relative flex items-end p-3 overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)] snap-start text-left"
                   >
                     <div
-                      className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 ${coverImageClass}`}
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 opacity-90"
                       style={{ backgroundImage: `url(${image})` }}
                     />
                     <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-300 mix-blend-multiply" style={{ backgroundColor: accent }} />
@@ -776,7 +767,7 @@ export default function Home() {
                     className="manga-panel min-w-[220px] max-w-[220px] h-[320px] group cursor-pointer relative flex items-end p-3 overflow-hidden shadow-[4px_4px_0_0_rgba(0,0,0,1)] snap-start text-left"
                   >
                     <div
-                      className={`absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 ${coverImageClass}`}
+                      className="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-110 opacity-90"
                       style={{ backgroundImage: `url(${image})` }}
                     />
                     <div className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-300 mix-blend-multiply" style={{ backgroundColor: accent }} />
