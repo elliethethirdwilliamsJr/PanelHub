@@ -424,6 +424,37 @@ export default function Watch() {
       .then(() => loadScript('/js/anime.js'))
       .then(() => loadScript('/js/anime.full.js'))
       .then(() => setScriptsLoaded(true));
+
+    // Cleanup function to stop video when component unmounts
+    return () => {
+      try {
+        // Stop all video elements
+        const videos = document.querySelectorAll('video');
+        videos.forEach(video => {
+          video.pause();
+          video.src = '';
+          video.load();
+        });
+        
+        // Destroy HLS instance if exists
+        if ((window as any).hlsInstance) {
+          try {
+            (window as any).hlsInstance.destroy();
+            (window as any).hlsInstance = null;
+          } catch (e) {
+            console.warn('Failed to destroy HLS instance', e);
+          }
+        }
+        
+        // Clear player area
+        const playerArea = document.getElementById('player-area');
+        if (playerArea) {
+          playerArea.innerHTML = '';
+        }
+      } catch (e) {
+        console.warn('Cleanup error', e);
+      }
+    };
   }, [apiBaseUrl, params.id, selectedEpisode?.number]);
 
   // When a playable stream URL is available, instruct the reference player to play it.

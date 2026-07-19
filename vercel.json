@@ -9,32 +9,18 @@
   },
   "rewrites": [
     {
-      "source": "/api/watch/:path*",
+      "source": "/api/:path*",
       "destination": "/api/proxy"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/proxy"
     },
     {
-      "source": "/api/search",
-      "destination": "/api/proxy"
-    },
-    {
-      "source": "/api/trending",
-      "destination": "/api/proxy"
-    },
-    {
-      "source": "/api/spotlight",
-      "destination": "/api/proxy"
-    },
-    {
-      "source": "/api/popular",
-      "destination": "/api/proxy"
-    },
-    {
-      "source": "/api/proxy/:path*",
-      "destination": "/api/proxy"
-    },
-    {
-      "source": "/((?!api/).*)",
-      "destination": "/index.html"
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
