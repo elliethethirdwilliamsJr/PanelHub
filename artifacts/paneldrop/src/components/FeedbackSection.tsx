@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { db } from '@/lib/firebase';
+import { collection, addDoc, query, orderBy, limit, getDocs, serverTimestamp } from 'firebase/firestore';
 
 interface Feedback {
   id: string;
@@ -18,18 +20,30 @@ export default function FeedbackSection() {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Fetch feedback from Firebase
+  // Fetch feedback directly from Firestore
   useEffect(() => {
     const fetchFeedback = async () => {
       try {
-        const response = await fetch('/api/feedback/get?limit=50');
-        if (!response.ok) throw new Error('Failed to fetch feedback');
+        const feedbackRef = collection(db, 'feedback');
+        const q = query(feedbackRef, orderBy('createdAt', 'desc'), limit(50));
+        const querySnapshot = await getDocs(q);
         
-        const data = await response.json();
-        setFeedbackList(data.feedback || []);
+        const feedback: Feedback[] = [];
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          feedback.push({
+            id: doc.id,
+            username: data.username || 'Anonymous',
+            comment: data.comment || '',
+            timestamp: data.timestamp,
+            createdAt: data.createdAt || new Date().toISOString(),
+          });
+        });
+        
+        setFeedbackList(feedback);
       } catch (err) {
         console.error('Error fetching feedback:', err);
-        setError('Failed to load feedback');
+        setError('Unable to load feedback at this time');
       } finally {
         setLoading(false);
       }
@@ -46,36 +60,43 @@ export default function FeedbackSection() {
     setError(null);
 
     try {
-      const response = await fetch('/api/feedback/post', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: username.trim() || 'Anonymous',
-          comment: newComment.trim(),
-        }),
-      });
+      const feedbackRef = collection(db, 'feedback');
+      const feedbackData = {
+        username: username.trim() || 'Anonymous',
+        comment: newComment.trim(),
+        timestamp: serverTimestamp(),
+        createdAt: new Date().toISOString(),
+      };
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to submit feedback');
-      }
+      await addDoc(feedbackRef, feedbackData);
 
       // Clear form
       setNewComment('');
       setUsername('');
 
       // Refresh feedback list
-      const refreshResponse = await fetch('/api/feedback/get?limit=50');
-      if (refreshResponse.ok) {
-        const data = await refreshResponse.json();
-        setFeedbackList(data.feedback || []);
-      }
+      const q = query(feedbackRef, orderBy('createdAt', 'desc'), limit(50));
+      const querySnapshot = await getDocs(q);
+      
+      const feedback: Feedback[] = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        feedback.push({
+          id: doc.id,
+          username: data.username || 'Anonymous',
+          comment: data.comment || '',
+          timestamp: data.timestamp,
+          createdAt: data.createdAt || new Date().toISOString(),
+        });
+      });
+      
+      setFeedbackList(feedback);
 
       alert('Thank you for your feedback!');
     } catch (err: any) {
       console.error('Error submitting feedback:', err);
       setError(err.message || 'Failed to submit feedback');
-      alert('Failed to submit feedback. Please try again.');
+      alert(err.message || 'Failed to submit feedback. Please try again.');
     } finally {
       setSubmitting(false);
     }

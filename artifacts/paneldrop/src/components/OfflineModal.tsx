@@ -4,7 +4,6 @@ const accent = '#f04e35';
 
 export default function OfflineModal() {
   const [isOffline, setIsOffline] = useState(false);
-  const [errorType, setErrorType] = useState<'offline' | 'server'>('offline');
 
   useEffect(() => {
     const handleOnline = () => {
@@ -13,41 +12,19 @@ export default function OfflineModal() {
 
     const handleOffline = () => {
       setIsOffline(true);
-      setErrorType('offline');
     };
 
     // Check initial connection status
     if (!navigator.onLine) {
       setIsOffline(true);
-      setErrorType('offline');
     }
 
     window.addEventListener('online', handleOnline);
     window.addEventListener('offline', handleOffline);
 
-    // Also listen for fetch errors globally
-    const originalFetch = window.fetch;
-    window.fetch = async (...args) => {
-      try {
-        const response = await originalFetch(...args);
-        if (!response.ok && response.status >= 500) {
-          setIsOffline(true);
-          setErrorType('server');
-        }
-        return response;
-      } catch (error) {
-        if (error instanceof TypeError && error.message.includes('fetch')) {
-          setIsOffline(true);
-          setErrorType('offline');
-        }
-        throw error;
-      }
-    };
-
     return () => {
       window.removeEventListener('online', handleOnline);
       window.removeEventListener('offline', handleOffline);
-      window.fetch = originalFetch;
     };
   }, []);
 
@@ -92,14 +69,14 @@ export default function OfflineModal() {
           <div className="relative z-10 text-center">
             <div className="w-20 h-20 mx-auto mb-4 border-4 border-black bg-white flex items-center justify-center">
               <div className="text-4xl" style={{ color: accent }}>
-                {errorType === 'offline' ? '⚠' : '⚠'}
+                ⚠
               </div>
             </div>
             <h2 className="font-manga-title text-2xl md:text-3xl uppercase tracking-wider text-white drop-shadow-[2px_2px_0_rgba(0,0,0,1)] mb-2">
-              {errorType === 'offline' ? 'No Internet Connection' : 'Server Error'}
+              No Internet Connection
             </h2>
             <p className="font-manga-body text-sm font-black uppercase tracking-[0.2em] text-white/90">
-              {errorType === 'offline' ? 'Connection Lost' : 'Service Unavailable'}
+              Connection Lost
             </p>
           </div>
         </div>
@@ -108,19 +85,9 @@ export default function OfflineModal() {
         <div className="p-6">
           <div className="border-4 border-black p-4 bg-white mb-4">
             <p className="font-manga-body text-sm text-gray-700 leading-relaxed text-center">
-              {errorType === 'offline' ? (
-                <>
-                  <strong>Your internet connection appears to be offline.</strong>
-                  <br />
-                  Please check your network settings and try again.
-                </>
-              ) : (
-                <>
-                  <strong>Our servers are experiencing issues.</strong>
-                  <br />
-                  We're working on it! Please try again in a few moments.
-                </>
-              )}
+              <strong>Your internet connection appears to be offline.</strong>
+              <br />
+              Please check your network settings and try again.
             </p>
           </div>
 
@@ -133,37 +100,18 @@ export default function OfflineModal() {
               Troubleshooting Steps
             </h4>
             <ul className="space-y-1.5 text-xs font-manga-body text-gray-700">
-              {errorType === 'offline' ? (
-                <>
-                  <li className="flex items-start gap-2">
-                    <span style={{ color: accent }}>•</span>
-                    <span>Check if your WiFi or mobile data is enabled</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span style={{ color: accent }}>•</span>
-                    <span>Try turning airplane mode off</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span style={{ color: accent }}>•</span>
-                    <span>Restart your router or modem</span>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li className="flex items-start gap-2">
-                    <span style={{ color: accent }}>•</span>
-                    <span>Wait a few moments and try again</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span style={{ color: accent }}>•</span>
-                    <span>Clear your browser cache</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span style={{ color: accent }}>•</span>
-                    <span>Contact us if the problem persists</span>
-                  </li>
-                </>
-              )}
+              <li className="flex items-start gap-2">
+                <span style={{ color: accent }}>•</span>
+                <span>Check if your WiFi or mobile data is enabled</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span style={{ color: accent }}>•</span>
+                <span>Try turning airplane mode off</span>
+              </li>
+              <li className="flex items-start gap-2">
+                <span style={{ color: accent }}>•</span>
+                <span>Restart your router or modem</span>
+              </li>
             </ul>
           </div>
 
